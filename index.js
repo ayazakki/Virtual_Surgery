@@ -10,7 +10,8 @@ require("dotenv").config();
 const path= require('path');
 const helmet =require("helmet");
 const cors = require("cors");
-const connectToDB =require("./config/db")
+const connectToDB =require("./config/db");
+const compression =require("compression");
 
 //connection ToDB
 connectToDB();
@@ -31,6 +32,8 @@ app.use(helmet());
 
 //cors policy 
 app.use (cors());
+
+app.use(compression());
 
 //set view engine 
 app.set('view engine' , 'ejs');
@@ -55,5 +58,6 @@ app.use(errorHandler);
 //running server
 const PORT = process.env.PORT||8000;
 app.listen(PORT,() => console.log(`server is running in ${process.env.NODE_ENV} on port ${PORT}`));
+
 
 
