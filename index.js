@@ -2,6 +2,7 @@ const express= require("express");
 const patientspath=require("./routes/patients");
 const LogUserPath =require("./routes/LogUser");
 const UsersPath =require("./routes/updateUser");
+const mriscanpath=require('./routes/MRiScan');
 const passwordpath =require("./routes/password");
 const upload=require("./routes/upload");
 const logger= require("./middlewares/logger");
@@ -42,6 +43,7 @@ app.set('view engine' , 'ejs');
 app.use("/api/patients",patientspath);
 app.use("/api/auth",LogUserPath);
 app.use("/api/users",UsersPath);
+app.use("/api/mriscan",mriscanpath);
 app.use("/password",passwordpath);
 app.use('/api/upload',upload);
 
