@@ -22,47 +22,50 @@ module.exports.getForgotPasswordView = asyncHandler((req,res) => {
  *  @access  public 
  */
 module.exports.sendForgotPasswordLink = asyncHandler(async(req,res) =>{
-   const user = await User.findOne({Email:req.body.Email});
-   if(!user){
-    return res.status(404).json({message:"user is not found"});
-   }
+ const user = await User.findOne({ Email: req.body.Email });
+ if (!user) {
+  return res.status(404).json({ message: "user is not found" });
+ }
 
-   const secret = process.env.JWT_SECRET_KEY + user.Password;
-   const token = jwt.sign({Email:user.Email, id:user.id}, secret,{
-    expiresIn: '10m'
-   });
+ const secret = process.env.JWT_SECRET_KEY + user.Password;
+ const token = jwt.sign({ Email: user.Email, id: user.id }, secret, {
+  expiresIn: "10m",
+ });
 
-   const link = `http://localhost:8000/password/reset-password/${user._id}/${token}`;
-   const transporter = nodemailer.createTransport({
-    service:"gmail",
-    auth:{
-        user:process.env.USER_EMAIL,
-        pass:process.env.USER_PASS,
-    },
-    tls:{
-        rejectUnauthorized : false
-    }
-});
-const mailOptions={
-    from:process.env.USER_EMAIL,
-    to:user.Email,
-    subject:"Reset Password",
-    html:`<div>
+ // change
+ //  url: `${req.protocol}://${req.get('host')}/`,
+//  const link = `http://localhost:8000/password/reset-password/${user._id}/${token}`;
+  const link = `${req.protocol}://${req.get("host")}/password/reset-password/${
+   user._id
+  }/${token}`;
+ const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+   user: process.env.USER_EMAIL,
+   pass: process.env.USER_PASS,
+  },
+  tls: {
+   rejectUnauthorized: false,
+  },
+ });
+ const mailOptions = {
+  from: process.env.USER_EMAIL,
+  to: user.Email,
+  subject: "Reset Password",
+  html: `<div>
             <h4>click on the link below to rest Your password </h4>
             <p>${link}</p>
-        </div>`
-
-}
-transporter.sendMail(mailOptions,function(error,success){
-    if(error){
-        console.log(error);
-        return res.status(500).json({message:'Something went wrong'});
-    }else{
-        console.log("Email sent "+ success.response);
-        res.render("link-send");
-    }
-});
-
+        </div>`,
+ };
+ transporter.sendMail(mailOptions, function (error, success) {
+  if (error) {
+   console.log(error);
+   return res.status(500).json({ message: "Something went wrong" });
+  } else {
+   console.log("Email sent " + success.response);
+   res.render("link-send");
+  }
+ });
 });
 
 

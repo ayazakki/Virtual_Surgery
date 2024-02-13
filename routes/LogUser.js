@@ -31,7 +31,9 @@ router.post("/register",asyncHandler(async(req,res)=>{
         Age:req.body.Age,
         Gender:req.body.Gender,
         Title:req.body.Title,
-        Specialist:req.body.Specialist,
+        Specialist: req.body.Specialist,
+        //change
+        // role shouldnt be taken from user to avoid normal users signup with admin permisions
         IsAdmin:req.body.IsAdmin,
         Password:req.body.Password
 
