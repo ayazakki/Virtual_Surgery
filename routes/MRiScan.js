@@ -20,8 +20,11 @@ notes
 
 router.get("/",asyncHandler(async (req,res) => {
     
-    const scans= await MRIScan.find({})
-    .populate("Patient",["_id","FristName","LastName"]);
+    const scans = await MRIScan.find({}).populate("Patient", [
+     "_id",
+     "FirstName",
+     "LastName",
+    ]);
     res.status(200).json(scans);
 } 
 ));
