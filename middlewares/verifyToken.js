@@ -17,10 +17,10 @@ function verifyToken(req,res,next){
 
 };
 
-//verifyToken& Authorthize the sergeon
+//verifyToken& Authorthize the user
 function verifyTokenAndAuthorization(req,res,next){
     verifyToken(req,res,()=>{
-        if(req.user.id === req.params.id||req.user.IsAdmin){
+        if(req.user.id === req.params.id || req.user.IsAdmin){
             next();
         }
         else{

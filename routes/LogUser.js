@@ -23,18 +23,17 @@ router.post("/register",asyncHandler(async(req,res)=>{
     }
     const salt = await bcrypt.genSalt(10);
     req.body.Password= await bcrypt.hash(req.body.Password,salt);
-    user = new User({
-        FristName:req.body.FristName,
-        LastName: req.body.LastName,
-        UserName:req.body.UserName,
-        Email:req.body.Email,
-        Age:req.body.Age,
-        Gender:req.body.Gender,
-        Title:req.body.Title,
-        Specialist:req.body.Specialist,
-        IsAdmin:req.body.IsAdmin,
-        Password:req.body.Password
 
+    user = new User({
+     FirstName: req.body.FirstName,
+     LastName: req.body.LastName,
+     UserName: req.body.UserName,
+     Email: req.body.Email,
+     Age: req.body.Age,
+     Gender: req.body.Gender,
+     Title: req.body.Title,
+     Specialist: req.body.Specialist,
+     Password: req.body.Password,
     });
     const result =await user.save();
     const token = user.generateToken();

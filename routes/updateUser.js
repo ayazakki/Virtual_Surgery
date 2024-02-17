@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 const bcrypt =require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const{User,validateUpdate}=require("../models/usermodel");
-const {verifyToken,verifyTokenAndAuthorization,verifyTokenAndAdmin}=require("../middlewares/verifyToken");
+const {verifyTokenAndAuthorization,verifyTokenAndAdmin}=require("../middlewares/verifyToken");
 /** 
 @desc Update User
 @route /api/Users/:id
@@ -14,26 +14,29 @@ const {verifyToken,verifyTokenAndAuthorization,verifyTokenAndAdmin}=require("../
 router.put('/:id',verifyTokenAndAuthorization, asyncHandler(async (req,res)=>{
 
     const {error}= validateUpdate(req.body);
-    if(error) return res.status(400).json({message:error.details[0].message});
+    if(error){
+        return res.status(400).json({message:error.details[0].message});
+    } 
     //console.log(req.headers);
     if(req.body.Password){
     const salt = await bcrypt.genSalt(10);
     req.body.Password= await bcrypt.hash(req.body.Password,salt);
     }
-    const UpdateUser=await User.findByIdAndUpdate(req.params.id,{
-        $set:{
-            FristName:req.body.FristName,
-            LastName: req.body.LastName,
-            UserName:req.body.UserName,
-            Email:req.body.Email,
-            Age:req.body.Age,
-            Gender:req.body.Gender,
-            Title:req.body.Title,
-            Specialist:req.body.Specialist,
-            IsAdmin:req.body.IsAdmin,
-            Password:req.body.Password
-        }     
-    },{new:true}).select("-Password");
+    const UpdateUser = await User.findByIdAndUpdate(
+     req.params.id,
+     {
+      $set: {
+       FirstName: req.body.FirstName,
+       LastName: req.body.LastName,
+       UserName: req.body.UserName,
+       Email: req.body.Email,
+       Age: req.body.Age,
+       Gender: req.body.Gender,
+       Title: req.body.Title,
+       Specialist: req.body.Specialist,
+       Password: req.body.Password,
+      }
+     },{ new: true }).select("-Password");
     res.status(200).json(UpdateUser);
 }));
 /** 
@@ -75,7 +78,7 @@ router.delete("/:id",verifyTokenAndAuthorization ,asyncHandler(async(req,res) =>
     const user =await User.findById(req.params.id).select("-Password");
     if(user){
         await User.findByIdAndDelete(req.params.id);
-    res.status(200).json({msg:"user has been deleted successfully .."});
+        res.status(200).json({msg:"user has been deleted successfully .."});
     }else{
         return res.status(404).json({msg:"user not found"});
         }
