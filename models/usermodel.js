@@ -118,7 +118,7 @@ function validateUpdate(obj) {
      Gender: joi.string().min(3).max(5),
      Title: joi.string().min(3).max(200),
      Specialist: joi.string().min(3).max(200),
-     Password: passwordComplexity().required(),
+     Password: passwordComplexity(),
     });
     return schema.validate(obj);
 };
