@@ -18,7 +18,7 @@ router.post("/register",asyncHandler(async(req,res)=>{
     }
     let user = await User.findOne({email:req.body.Email});
     if(user){
-        return res.status(400).json({message:"this user already registerted"});
+        return res.status(400).json({message:"This user already registered"});
 
     }
     const salt = await bcrypt.genSalt(10);
