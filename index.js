@@ -13,6 +13,8 @@ const helmet =require("helmet");
 const cors = require("cors");
 const connectToDB =require("./config/db");
 const compression =require("compression");
+//const swaggerjsdoc = require("swagger-jsdoc");
+//const swaggerui = require("swagger-ui-express");
 
 //connection ToDB
 connectToDB();
@@ -46,6 +48,26 @@ app.use("/api/users",UsersPath);
 app.use("/api/mriscan",mriscanpath);
 app.use("/password",passwordpath);
 app.use('/api/upload',upload);
+
+/*const options ={
+    definition:{
+        openapi:"3.1.0",
+        servers:[
+            {
+                url:"https://virtual-surgery.onrender.com/",
+            },
+        ],
+    },
+    apis:["./routes/*.js"]
+};
+
+const spaces = swaggerjsdoc(options)
+app.use(
+    "/api~docs",
+    swaggerui.serve,
+    swaggerui.setup(spaces)
+)
+*/
 
 //error hanlder middleware
 app.use(notFound );
