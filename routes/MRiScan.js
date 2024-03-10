@@ -1,8 +1,27 @@
 const express=require('express');
 const router= express.Router();
 const asyncHandler = require("express-async-handler");
-
+const upload = require('./upload');
 const{validateCreateMRIScan,validateUpdateMRIScan,MRIScan} = require("../models/MRimodel");
+
+
+
+router.post('/upload', upload.single('mriscanImage'), async (req, res) => {
+    try {
+        const patientId = req.body.patientId; // Access patientId from request body
+        const newMRIScan = new MRIScan({
+          Patient: patientId, // Use patientId when creating MRIScan object
+          ScanDetalies:req.body.ScanDetalies,
+          Image: req.file.path // save image path to the database
+        });
+        await newMRIScan.save();
+        res.status(201).json({ message: 'MRIScan uploaded successfully' });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+  });
+
+
 
 //http methods 
 
@@ -17,7 +36,7 @@ notes
 //lt  : less than gt : greater than lte : less than or equals to   gte :
 //in [9,10],nin:not in
 */ 
-
+/*
 router.get("/",asyncHandler(async (req,res) => {
     
     const scans = await MRIScan.find({}).populate("Patient", [
@@ -28,6 +47,7 @@ router.get("/",asyncHandler(async (req,res) => {
     res.status(200).json(scans);
 } 
 ));
+*/
 
 /** 
 @desc Get MRIScan  by id
@@ -37,6 +57,7 @@ router.get("/",asyncHandler(async (req,res) => {
 @access Public
 
 */
+/*
 router.get("/:id",asyncHandler(async(req,res)=>{
 
     const scans = await MRIScan.findById(req.params.id).populate("Patient");
@@ -49,7 +70,7 @@ router.get("/:id",asyncHandler(async(req,res)=>{
 }    
 
 ));
-
+*/
 
 /** 
 @desc add new MriSCAN
@@ -57,6 +78,7 @@ router.get("/:id",asyncHandler(async(req,res)=>{
 @method post
 @access Public
 */
+/*
 router.post("/",asyncHandler( async (req,res)=>{
     
     const {error}=validateCreateMRIScan(req.body);
@@ -78,7 +100,7 @@ router.post("/",asyncHandler( async (req,res)=>{
         
 }
 ));
-
+*/
 
 
 
@@ -90,6 +112,7 @@ router.post("/",asyncHandler( async (req,res)=>{
 @method put
 @access Public
 */
+/*
 router.put("/:id",asyncHandler(async(req,res)=> {
     const {error} = validateUpdateMRIScan(req.body);
 
@@ -112,6 +135,7 @@ router.put("/:id",asyncHandler(async(req,res)=> {
     
 }
 ));
+*/
 
 /** 
 @desc delete all patients
@@ -119,6 +143,7 @@ router.put("/:id",asyncHandler(async(req,res)=> {
 @method delete
 @access Public
 */
+/*
 router.delete("/:id",asyncHandler(async (req,res)=> {
 
     const mriscan = await MRIScan.findById(req.params.id);
@@ -134,7 +159,8 @@ router.delete("/:id",asyncHandler(async (req,res)=> {
     
 }
 ));
-
+*/
 
 
 module.exports=router;
+

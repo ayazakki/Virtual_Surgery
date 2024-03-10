@@ -1,7 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const { Patient } = require("../models/Patient");
-const { verifyTokenAndAdmin } = require("../middlewares/verifyToken");
+const {User}=require("../models/usermodel");
+const  {verifyToken} = require("../middlewares/verifyToken");
+
+// Define the route with the verifyToken middleware
+router.get("/", verifyToken, async (req, res) => {
+    try {
+      // Extract user information from the request object
+      const user = req.user;
+  
+      // Retrieve patients related to the user (assuming the user has a field like surgeonId)
+      const patientList = await Patient.find({ Surgeon: user.id });
+      res.status(200).json(patientList);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Something went wrong!" });
+    }
+  });
 
 /**
  * @desc    Get all patients
@@ -10,7 +26,8 @@ const { verifyTokenAndAdmin } = require("../middlewares/verifyToken");
  * @access    public
  */
 
-router.get("/", async (req, res) => {
+/*
+router.get("/",async (req, res) => {
  try {
   //If you want to get patients filtering with exact one value in Age , ex: Age:25 , we write {Age:25} inside find()
   // We can write the first example with this alternative one : {Age : {$eq:25} } also inside find() , This method called "Comparison Query Operator" (eq = means equal)
@@ -38,6 +55,7 @@ router.get("/", async (req, res) => {
   res.status(500).json({ message: "Something went wrong !" });
  }
 });
+*/
 
 router.get("/:id", async (req, res) => {
  try {

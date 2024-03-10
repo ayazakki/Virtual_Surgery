@@ -33,7 +33,7 @@ const MRIScanSchema = new mongoose.Schema({
 
 },{timestamps:true});
 
-
+/*
 function validateCreateMRIScan(obj){
     const schema=joi.object
     ({
@@ -53,12 +53,14 @@ function validateUpdateMRIScan(obj){
     });
     return schema.validate(obj);
 };
-
+*/
 const MRIScan= mongoose.model("MRIScan",MRIScanSchema);
 module.exports = {
     MRIScan,
+    /*
     validateCreateMRIScan,
     validateUpdateMRIScan
+    */
 }
 
 
