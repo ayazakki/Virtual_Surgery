@@ -46,7 +46,7 @@ app.use("/api/patients",patientspath);
 app.use("/api/auth",LogUserPath);
 app.use("/api/users",UsersPath);
 app.use("/api/mriscan",mriscanpath);
-app.use("/password",passwordpath);
+app.use("/api/password",passwordpath);
 //app.use('/api/upload',upload);
 
 /*const options ={
