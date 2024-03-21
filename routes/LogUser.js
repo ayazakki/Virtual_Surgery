@@ -139,7 +139,9 @@ router.get("/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req
     }
     user.isAccountVerified=true;
     await user.save();
-    await verificationToken.remove();
+     // Delete the verification token from the database
+     await VerificationToken.deleteOne({ _id: verificationToken._id });
+    //await verificationToken.remove();
     res.status(200).json({message:"Your account verified"});
 }));
 
