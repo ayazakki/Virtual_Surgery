@@ -39,11 +39,11 @@ router.post("/register",asyncHandler(async(req,res)=>{
     });
     //const result =await user.save();
     await user.save();
-    const VerificationToken = new VerificationToken({
+    const verificationToken = new VerificationToken({
         userId:user._id,
         token:crypto.randomBytes(32).toString("hex"),
     });
-    await VerificationToken.save();
+    await verificationToken.save();
     const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${VerificationToken.token}`;
     //puuting link into an htmlTemplate
     const htmlTemplate=`
@@ -127,16 +127,16 @@ router.get("/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req
     if(!user){
         return res.status(400).json({message:"invalid link"});
     }
-    const VerificationToken=await VerificationToken.findOne({
+    const verificationToken=await VerificationToken.findOne({
         userId:user._id,
         token:req.params.token,
     });
-    if(!VerificationToken){
+    if(!verificationToken){
         return res.status(400).json({message:"invalid link"});
     }
     user.isAccountVerified=true;
     await user.save();
-    await VerificationToken.remove();
+    await verificationToken.remove();
     res.status(200).json({message:"Your account verified"});
 }));
 
