@@ -37,7 +37,9 @@ module.exports.sendResetPasswordLinkCtrl = asyncHandler(async(req,res)=>{
     }
 
     //4-Creating Link
-    const link=`${req.protocol}://${req.get("host")}/reset-password/${user._id}/${verificationToken.token}`;
+    
+    const link=`${req.protocol}://${req.get("host")}/api/password/reset-password/${user._id}/${verificationToken.token}`;
+    //const link=`${req.protocol}://${req.get("host")}/reset-password/${user._id}/${verificationToken.token}`;
 
     //5-Creating Html template
     const htmlTemplate=`<a href="${link}">Click here to reset your password </a>`;
