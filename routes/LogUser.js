@@ -122,7 +122,7 @@ router.post("/login",asyncHandler(async(req,res)=>{
 @method GET
 @access Public
 */ 
-router.get("/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req,res) => {
+router.get(`/${user._id}/verify/${verificationToken.token}`,verifyUserAccountCtrl=asyncHandler(async(req,res) => {
     console.log("User ID:", req.params.userId);
     console.log("Token:", req.params.token);
     const user = await User.findById(req.params.userId);
