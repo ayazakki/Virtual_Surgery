@@ -101,8 +101,8 @@ router.post("/login",asyncHandler(async(req,res)=>{
             });
             await verificationToken.save();
         }
-        
-        const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
+        const link = `${req.protocol}://${req.get("host")}/api/auth/${user._id}/verify/${verificationToken.token}`;
+        //const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
         const htmlTemplate=`
             <div> 
                 <p>click on the link below to verify your email</p>
@@ -142,7 +142,7 @@ router.get("/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req
      // Delete the verification token from the database
      await VerificationToken.deleteOne({ _id: verificationToken._id });
     //await verificationToken.remove();
-    res.status(200).json({message:"Your account verified"});
+    res.status(200).json({message:"Your account has been verified successfully"});
 }));
 
 
