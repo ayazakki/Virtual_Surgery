@@ -44,7 +44,8 @@ router.post("/register",asyncHandler(async(req,res)=>{
         token:crypto.randomBytes(32).toString("hex"),
     });
     await verificationToken.save();
-    const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
+    const link = `${req.protocol}://${req.get("host")}/api/auth/${user._id}/verify/${verificationToken.token}`;
+    //const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
     //puuting link into an htmlTemplate
     const htmlTemplate=`
         <div>
@@ -100,8 +101,8 @@ router.post("/login",asyncHandler(async(req,res)=>{
             });
             await verificationToken.save();
         }
-        const link = `${req.protocol}://${req.get("host")}/api/auth/${user._id}/verify/${verificationToken.token}`;
-        // const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
+        
+        const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
         const htmlTemplate=`
             <div> 
                 <p>click on the link below to verify your email</p>
@@ -124,8 +125,7 @@ router.post("/login",asyncHandler(async(req,res)=>{
 @access Public
 */ 
 router.get("/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req,res) => {
-    console.log("User ID:", req.params.userId);
-    console.log("Token:", req.params.token);
+    
     const user = await User.findById(req.params.userId);
     if(!user){
         return res.status(400).json({message:"invalid link"});
