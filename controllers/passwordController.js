@@ -111,7 +111,9 @@ module.exports.resetPasswordCtrl=asyncHandler(async(req,res)=>{
 
      user.Password=hashedPassword;
      await user.save();
-     await verificationToken.remove();
+     //await verificationToken.remove();
+     // Delete the verification token from the database
+     await VerificationToken.deleteOne({ _id: verificationToken._id });
      
      res.status(200).json({message:"Password reset successfully , please log in"});
 });
