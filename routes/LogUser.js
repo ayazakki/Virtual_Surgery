@@ -100,7 +100,8 @@ router.post("/login",asyncHandler(async(req,res)=>{
             });
             await verificationToken.save();
         }
-        const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
+        const link = `${req.protocol}://${req.get("host")}/api/auth/${user._id}/verify/${verificationToken.token}`;
+        // const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
         const htmlTemplate=`
             <div> 
                 <p>click on the link below to verify your email</p>
@@ -122,7 +123,7 @@ router.post("/login",asyncHandler(async(req,res)=>{
 @method GET
 @access Public
 */ 
-router.get(`/${user._id}/verify/${verificationToken.token}`,verifyUserAccountCtrl=asyncHandler(async(req,res) => {
+router.get("/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req,res) => {
     console.log("User ID:", req.params.userId);
     console.log("Token:", req.params.token);
     const user = await User.findById(req.params.userId);
