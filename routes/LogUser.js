@@ -44,7 +44,7 @@ router.post("/register",asyncHandler(async(req,res)=>{
         token:crypto.randomBytes(32).toString("hex"),
     });
     await verificationToken.save();
-    const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${VerificationToken.token}`;
+    const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
     //puuting link into an htmlTemplate
     const htmlTemplate=`
         <div>
