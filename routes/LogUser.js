@@ -123,6 +123,8 @@ router.post("/login",asyncHandler(async(req,res)=>{
 @access Public
 */ 
 router.get("/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req,res) => {
+    console.log("User ID:", req.params.userId);
+    console.log("Token:", req.params.token);
     const user = await User.findById(req.params.userId);
     if(!user){
         return res.status(400).json({message:"invalid link"});
