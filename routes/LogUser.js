@@ -10,7 +10,7 @@ const VerificationToken = require('../models/VerificationToken');
 
 /** 
 @desc Register
-@route /api/LogUser/register
+@route /api/auth/register
 @method POST
 @access Public
 */ 
@@ -44,7 +44,8 @@ router.post("/register",asyncHandler(async(req,res)=>{
         token:crypto.randomBytes(32).toString("hex"),
     });
     await verificationToken.save();
-    const link = `${req.protocol}://${req.get("host")}/api/auth/${user._id}/verify/${verificationToken.token}`;
+    const link = `${req.protocol}://${req.get("host")}/verifyemail/${user._id}/verify/${verificationToken.token}`;
+    //const link = `${req.protocol}://${req.get("host")}/api/auth/${user._id}/verify/${verificationToken.token}`;
     //const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
     //puuting link into an htmlTemplate
     const htmlTemplate=`
@@ -71,7 +72,7 @@ router.post("/register",asyncHandler(async(req,res)=>{
 
 /** 
 @desc Login
-@route /api/auth/Login
+@route /api/auth/login
 @method POST
 @access Public
 */ 
@@ -101,7 +102,8 @@ router.post("/login",asyncHandler(async(req,res)=>{
             });
             await verificationToken.save();
         }
-        const link = `${req.protocol}://${req.get("host")}/api/auth/${user._id}/verify/${verificationToken.token}`;
+        const link = `${req.protocol}://${req.get("host")}/verifyemail/${user._id}/verify/${verificationToken.token}`;
+        //const link = `${req.protocol}://${req.get("host")}/api/auth/${user._id}/verify/${verificationToken.token}`;
         //const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
         const htmlTemplate=`
             <div> 
@@ -121,10 +123,10 @@ router.post("/login",asyncHandler(async(req,res)=>{
 /** 
 @desc Verify User Account
 @route /api/auth/:userId/verify/:token
-@method GET
-@access Public
+@method GET                       
+@access Public   
 */ 
-router.get("/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req,res) => {
+router.get("/verifyemail/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req,res) => {
     
     const user = await User.findById(req.params.userId);
     if(!user){
