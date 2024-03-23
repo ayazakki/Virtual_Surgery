@@ -44,9 +44,9 @@ router.post("/register",asyncHandler(async(req,res)=>{
         token:crypto.randomBytes(32).toString("hex"),
     });
     await verificationToken.save();
-    const link = `${req.protocol}://${req.get("host")}/verifyemail/${user._id}/verify/${verificationToken.token}`;
+    //const link = `${req.protocol}://${req.get("host")}/verifyemail/${user._id}/verify/${verificationToken.token}`;
     //const link = `${req.protocol}://${req.get("host")}/api/auth/${user._id}/verify/${verificationToken.token}`;
-    //const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
+    const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
     //puuting link into an htmlTemplate
     const htmlTemplate=`
         <div>
@@ -102,9 +102,9 @@ router.post("/login",asyncHandler(async(req,res)=>{
             });
             await verificationToken.save();
         }
-        const link = `${req.protocol}://${req.get("host")}/verifyemail/${user._id}/verify/${verificationToken.token}`;
+        //const link = `${req.protocol}://${req.get("host")}/verifyemail/${user._id}/verify/${verificationToken.token}`;
         //const link = `${req.protocol}://${req.get("host")}/api/auth/${user._id}/verify/${verificationToken.token}`;
-        //const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
+        const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
         const htmlTemplate=`
             <div> 
                 <p>click on the link below to verify your email</p>
@@ -126,7 +126,7 @@ router.post("/login",asyncHandler(async(req,res)=>{
 @method GET                       
 @access Public   
 */ 
-router.get("/verifyemail/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req,res) => {
+router.get("/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req,res) => {
     
     const user = await User.findById(req.params.userId);
     if(!user){
