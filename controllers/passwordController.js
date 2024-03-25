@@ -7,6 +7,7 @@ const VerificationToken=require("../models/VerificationToken");
 const crypto=require("crypto");
 const sendEmail=require("../utils/sendEmail");
 
+
 /**
  *  @desc    Send Reset Password Link
  *  @route   api/password/reset-password-link
@@ -73,7 +74,8 @@ module.exports.getResetPasswordLinkCtrl=asyncHandler(async(req,res)=>{
         return res.status(400).json({message:"invalid link"});
     }
 
-    res.status(200).json({message:"valid url"});
+    //res.status(200).json({message:"valid url"});
+    res.status(200).redirect(`http://localhost:3000/reset-password/${user._id}/${verificationToken.token}`);
 });
 
 
