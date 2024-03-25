@@ -83,11 +83,14 @@ router.post("/login",asyncHandler(async(req,res)=>{
     let user = await User.findOne({Email:req.body.Email});
     if(!user){
         return res.status(400).json({message:"invalid Email or Password"});
+        // Redirect to login page
+        res.redirect("http://localhost:3000/login");
 
     }
     const isPasswordMatach = await bcrypt.compare(req.body.Password,user.Password);
     if(!isPasswordMatach){
     return res.status(400).json({message:"invalid Email or Password"});
+    res.redirect("http://localhost:3000/login");
     }
     //sending email (verify account if not verified)
     if(!user.isAccountVerified){
