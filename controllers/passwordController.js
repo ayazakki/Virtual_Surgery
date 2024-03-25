@@ -75,7 +75,7 @@ module.exports.getResetPasswordLinkCtrl=asyncHandler(async(req,res)=>{
     }
 
     res.status(200).json({message:"valid url"});
-    res.status(200).redirect(`http://localhost:3000/reset-password/${user._id}/${verificationToken.token}`);
+    res.status(200).redirect(`http://localhost:3000/api/password/reset-password/${user._id}/${verificationToken.token}`);
 });
 
 
