@@ -39,8 +39,8 @@ module.exports.sendResetPasswordLinkCtrl = asyncHandler(async(req,res)=>{
 
     //4-Creating Link
     
-    //const link=`${req.protocol}://${req.get("host")}/api/password/reset-password/${user._id}/${verificationToken.token}`;
-    const link=`${req.protocol}://${req.get("host")}/reset-password/${user._id}/${verificationToken.token}`;
+    const link=`${req.protocol}://${req.get("host")}/api/password/reset-password/${user._id}/${verificationToken.token}`;
+    //const link=`${req.protocol}://${req.get("host")}/reset-password/${user._id}/${verificationToken.token}`;
 
     //5-Creating Html template
     const htmlTemplate=`<a href="${link}">Click here to reset your password </a>`;
@@ -75,7 +75,7 @@ module.exports.getResetPasswordLinkCtrl=asyncHandler(async(req,res)=>{
     }
 
     res.status(200).json({message:"valid url"});
-    res.status(200).redirect(`http://localhost:3000/api/password/reset-password/${user._id}/${verificationToken.token}`);
+    res.status(200).redirect(`http://localhost:3000/reset-password/${user._id}/${verificationToken.token}`);
 });
 
 
