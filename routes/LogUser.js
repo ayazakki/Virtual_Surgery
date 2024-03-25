@@ -63,7 +63,6 @@ router.post("/register",asyncHandler(async(req,res)=>{
     //const{Password, ...other}=result._doc;
     //res.status(201).json({...other,token});
     res.status(201).json({message:"We sent to you an email,please verify your email address"});
-
 }));
 
 
@@ -144,7 +143,8 @@ router.get("/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req
      // Delete the verification token from the database
      await VerificationToken.deleteOne({ _id: verificationToken._id });
     //await verificationToken.remove();
-    res.status(200).json({message:"Your account has been verified successfully"});
+    //res.status(200).json({message:"Your account has been verified successfully"});
+    res.status(200).redirect('http://localhost:3000/login');
 }));
 
 
