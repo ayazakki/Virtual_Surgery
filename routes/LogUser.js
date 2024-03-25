@@ -143,8 +143,8 @@ router.get("/:userId/verify/:token",verifyUserAccountCtrl=asyncHandler(async(req
      // Delete the verification token from the database
      await VerificationToken.deleteOne({ _id: verificationToken._id });
     //await verificationToken.remove();
-    // res.status(200).json({message:"Your account has been verified successfully"});
-    res.status(200).redirect(`http://localhost:3000/verifyemail/${user._id}/verify/${verificationToken.token}`);
+    res.status(200).json({message:"Your account has been verified successfully"});
+    res.redirect(`http://localhost:3000/verifyemail/${user._id}/verify/${verificationToken.token}`);
 }));
 
 
