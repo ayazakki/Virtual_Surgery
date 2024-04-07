@@ -96,7 +96,7 @@ module.exports.deletePatient = asyncHandler(async (req, res) => {
             await Patient.findByIdAndDelete(req.params.id);
 
             // Delete associated MRIScan records
-            await MRIScan.deleteMany({ patientId: patient._id });
+            // await MRIScan.deleteMany({ patientId: patient._id });
 
             // Send success response
             return res.status(200).json({
