@@ -50,3 +50,24 @@ module.exports.addPatient = asyncHandler(async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+/**
+@desc Get  all patient 
+@route /api/patients
+@method GET
+@access Public
+
+*/ 
+module.exports.getPatients = asyncHandler(async(req,res)=>{
+    try {
+        // Extract user information from the request object
+        const user = req.user;
+        const PatientList=await Patient.find({ Surgeon: user.id })
+        .populate("Surgeon",["_id","First_Name","Last_Name","Age"]).sort({createdAt:-1});
+        res.status(200).json(PatientList);
+    }catch(error){
+        console.log(error);
+        res.status(500).json({ message: "Something went wrong!" });
+    }
+
+ });
