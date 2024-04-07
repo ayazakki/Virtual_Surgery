@@ -1,5 +1,5 @@
 const express= require("express");
-const patientspath=require("./routes/patients");
+const patientspath=require("./routes/patient");
 const LogUserPath =require("./routes/LogUser");
 const UsersPath =require("./routes/updateUser");
 const mriscanpath=require('./routes/MRiScan');
