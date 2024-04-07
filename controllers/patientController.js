@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const asyncHandler = require("express-async-handler");
-const { Patient,validateCreatePatient } = require("../models/Patient");
+const { Patient } = require("../models/Patient");
 const {User}=require("../models/usermodel");
 const  {verifyToken} = require("../middlewares/verifyToken");
 
@@ -13,11 +13,12 @@ const  {verifyToken} = require("../middlewares/verifyToken");
 
 */
 module.exports.addPatient = asyncHandler(async (req, res) => {
+    /*
     const { error } = validateCreatePatient(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
-    
+    */
     // Access surgeon's ID from req.user
     const surgeonId = req.user.id;
 
