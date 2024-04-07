@@ -1,6 +1,11 @@
 const mongoose=require("mongoose");
 
 const PatientSchema=new mongoose.Schema({
+    Surgeon:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref:"usermodel"
+    },
     First_Name:{
         type:String,
         required:true,
@@ -27,11 +32,6 @@ const PatientSchema=new mongoose.Schema({
         required:true,
         trim:true,
         maxlength:200,
-    },
-    Surgeon:{
-        type:mongoose.Schema.Types.ObjectId,
-        required:true,
-        ref:"usermodel"
     },
     Risk_Factors_And_Life_Style:{
         type:String,
@@ -102,8 +102,38 @@ const PatientSchema=new mongoose.Schema({
     timestamps:true
 });
 
+//new
+function validateCreatePatient(obj){
+    const schema = joi.object
+    ({
+        
+        First_Name:joi.string().min(3).max(200).required(),
+        Last_Name:joi.string().min(3).max(200).required(),
+        Gender:joi.string().min(4).max(6).required(),
+        Age:joi.number().min(0).integer().required(),
+        Risk_Factors_And_Life_Style:joi.string().min(3).max(1000),
+        Family_History:joi.string().min(3).max(1000),
+        Neurological_Examination:joi.string().min(3).max(1000),
+        Symptoms:joi.string().min(3).max(1000),
+        Treatment_History:joi.string().min(3).max(1000),
+        Allergies:joi.string().min(3).max(1000),
+        Duration_And_Progression_Of_Symptoms:joi.string().min(3).max(1000),
+        Diagnosis:joi.string().min(3).max(1000),
+        Medical_History:joi.string().min(3).max(1000),
+        Notes:joi.string().min(3).max(1000),
+        Biopsy_Or_Pathology_Results:joi.string().min(3).max(1000),
+        Lab_Test_Result:joi.string().min(3).max(1000),
+        Current_Medications:joi.string().min(3).max(1000),
+        
+    });
+    return schema.validate(obj);
+};
+
+
+
 const Patient=mongoose.model("Patient",PatientSchema);
 
 module.exports={
-    Patient
+    Patient,
+    validateCreatePatient,
 }
