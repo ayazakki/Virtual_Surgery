@@ -1,6 +1,6 @@
 const express=require('express');
 const router= express.Router();
-const{addPatient,getPatients}=require("../controllers/patientController");
+const{addPatient,getAllPatients}=require("../controllers/patientController");
 //const validateObjectId=require("../middlewares/validateObjectId");
 const{verifyToken}=require("../middlewares/verifyToken");
 
@@ -8,7 +8,7 @@ const{verifyToken}=require("../middlewares/verifyToken");
 
 //http methods 
 router.route( '/' )
-      .get(verifyToken,getPatients)
+      .get(verifyToken,getAllPatients)
       .post(verifyToken,addPatient);
 
    

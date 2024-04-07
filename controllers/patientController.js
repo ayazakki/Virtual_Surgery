@@ -58,25 +58,16 @@ module.exports.addPatient = asyncHandler(async (req, res) => {
 @access Public
 
 */ 
-module.exports.getPatients = asyncHandler(async (req, res) => {
+module.exports.getAllPatients = asyncHandler(async (req, res) => {
     try {
-        // Ensure that user information is properly attached to the request object
+        // Extract user information from the request object
         const user = req.user;
-        if (!user) {
-            return res.status(401).json({ message: "Unauthorized: User information not found" });
-        }
-        
-        // Query the database to find patient records associated with the surgeon
-        const PatientList = await Patient.find({ Surgeon: user.id })
-            .populate("Surgeon", ["_id", "First_Name", "Last_Name", "Age"])
-            .sort({ createdAt: -1 });
-
-        // Return the list of patient records as a JSON response
-        res.status(200).json(PatientList);
-    } catch (error) {
-        // Log the error for debugging purposes
-        console.error("Error in getPatients:", error);
-        // Return a generic error message with a 500 status code
-        res.status(500).json({ message: "Internal server error" });
-    }
+    
+        // Retrieve patients related to the user (assuming the user has a field like surgeonId)
+        const patientList = await Patient.find({ Surgeon: user.id });
+        res.status(200).json(patientList);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Something went wrong!" });
+      }
 });
