@@ -1,6 +1,6 @@
 const express=require('express');
 const router= express.Router();
-const{addPatient}=require("../controller/pateintController");
+const{addPatient}=require("../controllers/patientController");
 //const validateObjectId=require("../middlewares/validateObjectId");
 const{verifytoken}=require("../middlewares/verifyToken")
 
