@@ -80,25 +80,36 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
 
 */
 
-module.exports.deletePatient=asyncHandler(async (req,res)=> {
+module.exports.deletePatient = asyncHandler(async (req, res) => {
+    try {
+        // Find the patient by ID and populate the Surgeon field
+        const patient = await Patient.findById(req.params.id).populate("Surgeon");
 
-    const patient = await Patient.findById(req.params.id);
-
-        if(!patient){
-        
-            res.status(404).json({message:'The patient with the given ID was not found.'})
+        // Check if the patient exists
+        if (!patient) {
+            return res.status(404).json({ message: 'The patient with the given ID was not found.' });
         }
-        if(req.user.IsAdmin || req.user.id === patient.user.toString())
-        {
+
+        // Check if the user is authorized to delete the patient
+        if (req.user.IsAdmin || (req.user.id === patient.Surgeon._id.toString())) {
+            // Delete the patient record
             await Patient.findByIdAndDelete(req.params.id);
-            await MRIScan.deleteMany({
-                patientId:patient._id
+
+            // Delete associated MRIScan records
+            await MRIScan.deleteMany({ patientId: patient._id });
+
+            // Send success response
+            return res.status(200).json({
+                message: 'Deleted successfully',
+                patientId: patient._id
             });
-            res.status(200).json({message : 'Deleted successfully',
-            patientId: patient._id});
+        } else {
+            // User is not authorized to delete the patient
+            return res.status(403).json({ message: "Access denied, forbidden" });
         }
-        else{
-            res.status(403).json({message:"access denied,forbidden"});
-        }
+    } catch (error) {
+        // Handle any errors
+        console.error("Error in deletePatient:", error);
+        return res.status(500).json({ message: "Internal server error" });
     }
-);
+});
