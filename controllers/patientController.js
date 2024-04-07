@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const asyncHandler = require("express-async-handler");
 const { Patient,validateCreatePatient } = require("../models/Patient");
 const {User}=require("../models/usermodel");
 const  {verifyToken} = require("../middlewares/verifyToken");

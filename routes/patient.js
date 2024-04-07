@@ -2,14 +2,14 @@ const express=require('express');
 const router= express.Router();
 const{addPatient}=require("../controllers/patientController");
 //const validateObjectId=require("../middlewares/validateObjectId");
-const{verifytoken}=require("../middlewares/verifyToken")
+const{verifyToken}=require("../middlewares/verifyToken");
 
 
 
 //http methods 
-
 router.route( '/' )
-    .post(verifytoken,addPatient);
+ .post(verifyToken,addPatient);
+
    
 
 
