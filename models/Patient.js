@@ -103,7 +103,7 @@ const PatientSchema=new mongoose.Schema({
 });
 
 //new
-/*
+
 function validateCreatePatient(obj){
     const schema = joi.object
     ({
@@ -129,11 +129,12 @@ function validateCreatePatient(obj){
     });
     return schema.validate(obj);
 };
-*/
+
 
 
 const Patient=mongoose.model("Patient",PatientSchema);
 
 module.exports={
     Patient,
+    validateCreatePatient,
 }
