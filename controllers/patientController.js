@@ -9,7 +9,7 @@ const  {verifyToken} = require("../middlewares/verifyToken");
 @desc add  patients
 @route /api/patients
 @method post
-@access private in log in
+@access private (only logged in user)
 
 */
 module.exports.addPatient = asyncHandler(async (req, res) => {
@@ -55,7 +55,7 @@ module.exports.addPatient = asyncHandler(async (req, res) => {
 @desc Get  all patient 
 @route /api/patients
 @method GET
-@access Public
+@access private (only logged in user)
 
 */ 
 module.exports.getAllPatients = asyncHandler(async (req, res) => {
@@ -71,3 +71,34 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
         res.status(500).json({ message: "Something went wrong!" });
       }
 });
+
+/** 
+@desc delete patients
+@route /api/patients/:id
+@method delete
+@access private (only logged in user)
+
+*/
+
+module.exports.deletePatient=asyncHandler(async (req,res)=> {
+
+    const patient = await Patient.findById(req.params.id);
+
+        if(!patient){
+        
+            res.status(404).json({message:'The patient with the given ID was not found.'})
+        }
+        if(req.user.IsAdmin || req.user.id === patient.user.toString())
+        {
+            await Patient.findByIdAndDelete(req.params.id);
+            await MRIScan.deleteMany({
+                patientId:patient._id
+            });
+            res.status(200).json({message : 'Deleted successfully',
+            patientId: patient._id});
+        }
+        else{
+            res.status(403).json({message:"access denied,forbidden"});
+        }
+    }
+);

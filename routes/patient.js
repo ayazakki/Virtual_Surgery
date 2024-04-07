@@ -1,7 +1,7 @@
 const express=require('express');
 const router= express.Router();
-const{addPatient,getAllPatients}=require("../controllers/patientController");
-//const validateObjectId=require("../middlewares/validateObjectId");
+const{addPatient,getAllPatients,deletePatient}=require("../controllers/patientController");
+const validateObjectId=require("../middlewares/validateObjectId");
 const{verifyToken}=require("../middlewares/verifyToken");
 
 
@@ -12,9 +12,8 @@ router.route( '/' )
       .post(verifyToken,addPatient);
 
    
-
-
-
+router.route( '/:id' )
+      .delete(validateObjectId,verifyToken,deletePatient);
 
 
 
