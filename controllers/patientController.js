@@ -91,9 +91,7 @@ module.exports.deletePatient  =asyncHandler(async (req,res)=> {
         if(req.user.IsAdmin || req.user.id === patient.Surgeon.toString())
         {
             await Patient.findByIdAndDelete(req.params.id);
-            await MRIScan.deleteMany({
-                patientId:patient._id
-            });
+            //await MRIScan.deleteMany({ patientId:patient._id});
             res.status(200).json({message : 'Deleted Successfully',
             patientId: patient._id});
         }
