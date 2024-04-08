@@ -1,6 +1,6 @@
 const express=require('express');
 const router= express.Router();
-const{addPatient,getAllPatients,deletePatient}=require("../controllers/patientController");
+const{addPatient,getAllPatients,deletePatient,getPatientByID}=require("../controllers/patientController");
 const validateObjectId=require("../middlewares/validateObjectId");
 const{verifyToken}=require("../middlewares/verifyToken");
 
@@ -13,6 +13,7 @@ router.route( '/' )
 
    
 router.route( '/:id' )
+      .get(validateObjectId,getPatientByID)
       .delete(validateObjectId,verifyToken,deletePatient);
 
 

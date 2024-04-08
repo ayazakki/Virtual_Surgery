@@ -76,7 +76,7 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
 @desc delete patients
 @route /api/patients/:id
 @method delete
-@access private (only logged in user)
+@access private (only logged in user and admin)
 
 */
 
@@ -99,4 +99,26 @@ module.exports.deletePatient  =asyncHandler(async (req,res)=> {
             res.status(403).json({message:"access denied,forbidden"});
         }
     }
+);
+
+/**
+@desc Get patients by id
+@route /api/patients/:id
+@method GET
+@access Public
+
+*/
+
+module.exports.getPatientByID=asyncHandler(async(req,res)=>{
+    
+    const patient= await Patient.findById(req.params.id).
+    populate("Surgeon",["-Password"]);
+    if(patient){
+        res.status(200).json(patient);
+    }
+    else{
+        res.status(404).json({message:'The patient with the given ID was not found.'})
+    }
+
+}
 );
