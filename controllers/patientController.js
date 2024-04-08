@@ -3,7 +3,7 @@ const router = express.Router();
 const asyncHandler = require("express-async-handler");
 const { Patient ,validateCreatePatient} = require("../models/Patient");
 const {User}=require("../models/usermodel");
-const  {verifyToken} = require("../middlewares/verifyToken");
+const  {verifyToken,verifyTokenAndAuthorization} = require("../middlewares/verifyToken");
 
 /**
 @desc add  patients
@@ -82,16 +82,15 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
 
 module.exports.deletePatient = asyncHandler(async (req, res) => {
     try {
-        // Find the patient by ID and populate the Surgeon field
-        const patient = await Patient.findById(req.params.id).populate("Surgeon");
-
-        // Check if the patient exists
-        if (!patient) {
-            return res.status(404).json({ message: 'The patient with the given ID was not found.' });
-        }
-
         // Check if the user is authorized to delete the patient
-        if (req.user.IsAdmin || (req.user.id === patient.Surgeon._id.toString())) {
+        verifyTokenAndAuthorization(req, res, async () => {
+            // Find the patient by ID
+            const patient = await Patient.findById(req.params.id);
+
+            if (!patient) {
+                return res.status(404).json({ message: 'The patient with the given ID was not found.' });
+            }
+
             // Delete the patient record
             await Patient.findByIdAndDelete(req.params.id);
 
@@ -103,13 +102,9 @@ module.exports.deletePatient = asyncHandler(async (req, res) => {
                 message: 'Deleted successfully',
                 patientId: patient._id
             });
-        } else {
-            // User is not authorized to delete the patient
-            return res.status(403).json({ message: "Access denied, forbidden" });
-        }
+        });
     } catch (error) {
-        // Handle any errors
-        console.error("Error in deletePatient:", error);
+        console.error("Error in deletePatients:", error);
         return res.status(500).json({ message: "Internal server error" });
     }
 });
