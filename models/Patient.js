@@ -1,10 +1,11 @@
 const mongoose=require("mongoose");
 const joi=require('joi');
+const { User } = require("../models/usermodel");
 const PatientSchema=new mongoose.Schema({
     Surgeon:{
         type:mongoose.Schema.Types.ObjectId,
         required:true,
-        ref:"usermodel"
+        ref:"User",
     },
     First_Name:{
         type:String,
