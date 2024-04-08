@@ -80,31 +80,25 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
 
 */
 
-module.exports.deletePatient = asyncHandler(async (req, res) => {
-    try {
-        // Check if the user is authorized to delete the patient
-        verifyTokenAndAuthorization(req, res, async () => {
-            // Find the patient by ID
-            const patient = await Patient.findById(req.params.id);
+module.exports.deletePatient  =asyncHandler(async (req,res)=> {
 
-            if (!patient) {
-                return res.status(404).json({ message: 'The patient with the given ID was not found.' });
-            }
+    const patient = await Patient.findById(req.params.id);
 
-            // Delete the patient record
+        if(!patient){
+        
+            res.status(404).json({message:'The patient with the given ID was not found.'})
+        }
+        if(req.user.IsAdmin || req.user.id === patient.Surgeon._id.toString())
+        {
             await Patient.findByIdAndDelete(req.params.id);
-
-            // Delete associated MRIScan records
-            // await MRIScan.deleteMany({ patientId: patient._id });
-
-            // Send success response
-            return res.status(200).json({
-                message: 'Deleted successfully',
-                patientId: patient._id
+            await MRIScan.deleteMany({
+                patientId:patient._id
             });
-        });
-    } catch (error) {
-        console.error("Error in deletePatients:", error);
-        return res.status(500).json({ message: "Internal server error" });
+            res.status(200).json({message : 'Deleted Successfully',
+            patientId: patient._id});
+        }
+        else{
+            res.status(403).json({message:"access denied,forbidden"});
+        }
     }
-});
+);
