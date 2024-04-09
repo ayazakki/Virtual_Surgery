@@ -5,6 +5,64 @@ const { Patient ,validateCreatePatient,validateUpdatePatient} = require("../mode
 const {User}=require("../models/usermodel");
 const  {verifyToken,verifyTokenAndAuthorization} = require("../middlewares/verifyToken");
 
+
+/**
+@desc Get  all patient 
+@route /api/patients
+@method GET
+@access private (only logged in user)
+
+*/ 
+module.exports.getAllPatients = asyncHandler(async (req, res) => {
+    try {
+        // Extract user information from the request object
+        const user = req.user;
+    
+        // Retrieve patients related to the user (assuming the user has a field like surgeonId)
+        const patientList = await Patient.find({ Surgeon: user.id })
+        .populate("Surgeon",["_id","First_Name","Last_Name"]).sort({createdAt:-1});
+        res.status(200).json(patientList);
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Something went wrong!" });
+      }
+});
+
+
+/**
+@desc Get patients by id
+@route /api/patients/:id
+@method GET
+@access private (only logged in user)
+
+*/
+
+module.exports.getPatientByID = asyncHandler(async (req, res) => {
+    try {
+        // Find the patient by ID and populate the Surgeon field
+        const patient = await Patient.findById(req.params.id)
+            .populate("Surgeon", ["-Password"]);
+
+        // Check if the patient exists
+        if (!patient) {
+            return res.status(404).json({ message: 'The patient with the given ID was not found.' });
+        }
+
+        // Check if the authenticated user is the owner of the patient record
+        if (req.user.id !== patient.Surgeon.toString()) {
+            return res.status(403).json({ message: "Access denied. You are not authorized to access this patient record." });
+        }
+
+        // If the user is authorized, send the patient record
+        res.status(200).json(patient);
+    } catch (error) {
+        // Handle any errors
+        console.error("Error in getPatientByID:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+
 /**
 @desc add  patients
 @route /api/patients
@@ -52,82 +110,10 @@ module.exports.addPatient = asyncHandler(async (req, res) => {
 });
 
 /**
-@desc Get  all patient 
-@route /api/patients
-@method GET
-@access private (only logged in user)
-
-*/ 
-module.exports.getAllPatients = asyncHandler(async (req, res) => {
-    try {
-        // Extract user information from the request object
-        const user = req.user;
-    
-        // Retrieve patients related to the user (assuming the user has a field like surgeonId)
-        const patientList = await Patient.find({ Surgeon: user.id });
-        res.status(200).json(patientList);
-      } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Something went wrong!" });
-      }
-});
-
-/** 
-@desc delete patients
-@route /api/patients/:id
-@method delete
-@access private (only logged in user and admin)
-
-*/
-
-module.exports.deletePatient  =asyncHandler(async (req,res)=> {
-
-    const patient = await Patient.findById(req.params.id);
-
-        if(!patient){
-        
-            res.status(404).json({message:'The patient with the given ID was not found.'})
-        }
-        if(req.user.IsAdmin || req.user.id === patient.Surgeon.toString())
-        {
-            await Patient.findByIdAndDelete(req.params.id);
-            //await MRIScan.deleteMany({ patientId:patient._id});
-            res.status(200).json({message : 'Deleted Successfully',
-            patientId: patient._id});
-        }
-        else{
-            res.status(403).json({message:"access denied,forbidden"});
-        }
-    }
-);
-
-/**
-@desc Get patients by id
-@route /api/patients/:id
-@method GET
-@access private (only logged in user)
-
-*/
-
-module.exports.getPatientByID=asyncHandler(async(req,res)=>{
-    
-    const patient= await Patient.findById(req.params.id).
-    populate("Surgeon",["-Password"]);
-    if(patient){
-        res.status(200).json(patient);
-    }
-    else{
-        res.status(404).json({message:'The patient with the given ID was not found.'})
-    }
-
-}
-);
-
-   /**
 @desc update patient
 @route /api/patients/:id
 @method put
-@access private ()
+@access private (only logged in user)
 
 */
 module.exports.updatePatient=asyncHandler(async(req,res)=> {
@@ -171,7 +157,86 @@ module.exports.updatePatient=asyncHandler(async(req,res)=> {
         },{new:true}).populate("Surgeon",["-Passward"]);
         res.status(200).json(updatePatient);
         
-        
-    
-        
 });
+
+/** 
+@desc delete patients
+@route /api/patients/:id
+@method delete
+@access private (only logged in user)
+
+*/
+
+module.exports.deletePatient=asyncHandler(async (req,res)=> {
+
+    const patient = await Patient.findById(req.params.id);
+
+        if(!patient){
+        
+            res.status(404).json({message:'The patient with the given ID was not found.'})
+        }
+        if(req.user.id === patient.Surgeon.toString())
+        {
+            await Patient.findByIdAndDelete(req.params.id);
+            //await MRIScan.deleteMany({ patientId:patient._id});
+            res.status(200).json({message : 'Deleted Successfully',
+            patientId: patient._id});
+        }
+        else{
+            res.status(403).json({message:"access denied,forbidden"});
+        }
+    }
+);
+
+/**
+@desc Count patients
+@route /api/patients/count
+@method get
+@access private (only logged in user)
+*/
+module.exports.countPatients = asyncHandler(async (req, res) => {
+    try {
+        // Extract user ID from the token
+        const surgeonId = req.user.id;
+
+        // Use the user ID to find the patients associated with that user
+        const count = await Patient.countDocuments({ Surgeon: surgeonId });
+
+        res.status(200).json(count);
+    } catch (error) {
+        console.error("Error in countPatients:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+/**
+@desc  Pagination patients
+@route /api/patients
+@method get
+@access private (only logged in user)
+*/
+module.exports.paginationPatients = asyncHandler(async (req, res) => {
+    const { pageNumber } = req.query;
+    const patientPerPage = 2;
+
+    try {
+        // Extract the user ID from req.user
+        const surgeonId = req.user.id;
+
+        // Fetch patients associated with the authenticated user
+        const patientList = await Patient.find({ Surgeon: surgeonId })
+            .skip((pageNumber - 1) * patientPerPage)
+            .limit(patientPerPage)
+            .populate("Surgeon", ["_id", "First_Name", "Last_Name"]);
+
+        // Send the filtered patient list as the response
+        res.status(200).json(patientList);
+    } catch (error) {
+        // Handle errors
+        console.error("Error fetching patients:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+
+
