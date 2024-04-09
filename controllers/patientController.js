@@ -105,7 +105,7 @@ module.exports.deletePatient  =asyncHandler(async (req,res)=> {
 @desc Get patients by id
 @route /api/patients/:id
 @method GET
-@access private ()
+@access private (only logged in user)
 
 */
 
@@ -168,7 +168,7 @@ module.exports.updatePatient=asyncHandler(async(req,res)=> {
             
     
             }
-        },{new:true}).populate("user",["-Passward"]);
+        },{new:true}).populate("Surgeon",["-Passward"]);
         res.status(200).json(updatepatient);
         
         

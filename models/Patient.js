@@ -134,23 +134,23 @@ function validateCreatePatient(obj){
 function validateUpdatePatient(obj){
     const schema=joi.object
     ({ 
-        FristName:joi.string().min(3).max(200),
-        LastName:joi.string().min(3).max(200),
+        First_Name:joi.string().min(3).max(200),
+        Last_Name:joi.string().min(3).max(200),
         Age:joi.number().min(0).integer(),
         Gender:joi.string().min(4).max(6),
-        RiskFactorsAndLifeStyle:joi.string().min(3).max(1000),
-        FamilyHistory:joi.string().min(3).max(1000),
-        NeurologicalExam:joi.string().min(3).max(1000),
+        Risk_Factors_And_Life_Style:joi.string().min(3).max(1000),
+        Family_History:joi.string().min(3).max(1000),
+        Neurological_Examination:joi.string().min(3).max(1000),
         Symptoms:joi.string().min(3).max(1000),
-        TreatmentHistory:joi.string().min(3).max(1000),
+        Treatment_History:joi.string().min(3).max(1000),
         Allergies:joi.string().min(3).max(1000),
-        DurationAndProgressionOfSymptoms:joi.string().min(3).max(1000),
+        Duration_And_Progression_Of_Symptoms:joi.string().min(3).max(1000),
         Diagnosis:joi.string().min(3).max(1000),
-        MedicalHistory:joi.string().min(3).max(1000),
+        Medical_History:joi.string().min(3).max(1000),
         Notes:joi.string().min(3).max(1000),
-        BiopsyOrPathologyResults:joi.string().min(3).max(1000),
-        LabTestResult:joi.string().min(3).max(1000),
-        CurrentMedications:joi.string().min(3).max(1000),
+        Biopsy_Or_Pathology_Results:joi.string().min(3).max(1000),
+        Lab_Test_Result:joi.string().min(3).max(1000),
+        Current_Medications:joi.string().min(3).max(1000),
         
         
 
