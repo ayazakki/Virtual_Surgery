@@ -143,33 +143,33 @@ module.exports.updatePatient=asyncHandler(async(req,res)=> {
         return res.status(403).json({message:"access denied,forddien"});
     }
 
-    const updatepatient =  await Patient.findByIdAndUpdate(
+    const updatePatient =  await Patient.findByIdAndUpdate(
         req.params.id,
         {
             $set: {
-                FristName:req.body.FirstName,
-                LastName:req.body.LastName,
+                First_Name:req.body.First_Name,
+                Last_Name:req.body.Last_Name,
                 Age: req.body.Age ,
                 Gender: req.body.Gender ,
-                RiskFactorsAndLifeStyle:req.body.RiskFactorsAndLifeStyle,
-                FamilyHistory:req.body.FamilyHistory,
-                NeurologicalExam:req.body.NeurologicalExam,
+                Risk_Factors_And_Life_Style:req.body.Risk_Factors_And_Life_Style,
+                Family_History:req.body.Family_History,
+                Neurological_Examination:req.body.Neurological_Examination,
                 Symptoms:req.body.Symptoms,
-                TreatmentHistory:req.body.TreatmentHistory,
+                Treatment_History:req.body.Treatment_History,
                 Allergies:req.body.Allergies,
-                DurationAndProgressionOfSymptoms:req.body.DurationAndProgressionOfSymptoms,
+                Duration_And_Progression_Of_Symptoms:req.body.Duration_And_Progression_Of_Symptoms,
                 Diagnosis:req.body.Diagnosis,
-                MedicalHistory:req.body.MedicalHistory,
+                Medical_History:req.body.Medical_History,
                 Notes:req.body.Notes,
-                BiopsyOrPathologyResults:req.body.BiopsyOrPathologyResults,
-                LabTestResult:req.body.LabTestResult,
-                CurrentMedications:req.body.CurrentMedications,
+                Biopsy_Or_Pathology_Results:req.body.Biopsy_Or_Pathology_Results,
+                Lab_Test_Result:req.body.Lab_Test_Result,
+                Current_Medications:req.body.Current_Medications,
         
             
     
             }
         },{new:true}).populate("Surgeon",["-Passward"]);
-        res.status(200).json(updatepatient);
+        res.status(200).json(updatePatient);
         
         
     
