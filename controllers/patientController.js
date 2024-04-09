@@ -39,6 +39,9 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
 
 module.exports.getPatientByID = asyncHandler(async (req, res) => {
     try {
+        // Log the decoded user information
+        console.log('Decoded user:', req.user);
+
         // Find the patient by ID and populate the Surgeon field
         const patient = await Patient.findById(req.params.id)
             .populate("Surgeon", ["-Password"]);
