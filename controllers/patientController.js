@@ -139,7 +139,7 @@ module.exports.updatePatient=asyncHandler(async(req,res)=> {
     if(!patient){
         res.status(404).json({message:"patient not found"})
     }
-    if(req.user.id!== patient.user.toString()){
+    if(req.user.id!== patient.Surgeon.toString()){
         return res.status(403).json({message:"access denied,forddien"});
     }
 
