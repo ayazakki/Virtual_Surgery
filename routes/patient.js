@@ -13,7 +13,7 @@ router.route( '/' )
 
    
 router.route( '/:id' )
-      .get(validateObjectId,getPatientByID)
+      .get(validateObjectId,verifyToken,getPatientByID)
       .delete(validateObjectId,verifyToken,deletePatient);
 
 

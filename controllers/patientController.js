@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const asyncHandler = require("express-async-handler");
-const { Patient ,validateCreatePatient} = require("../models/Patient");
+const { Patient ,validateCreatePatient,validateUpdatePatient} = require("../models/Patient");
 const {User}=require("../models/usermodel");
 const  {verifyToken,verifyTokenAndAuthorization} = require("../middlewares/verifyToken");
 
@@ -105,7 +105,7 @@ module.exports.deletePatient  =asyncHandler(async (req,res)=> {
 @desc Get patients by id
 @route /api/patients/:id
 @method GET
-@access Public
+@access private ()
 
 */
 
@@ -122,3 +122,56 @@ module.exports.getPatientByID=asyncHandler(async(req,res)=>{
 
 }
 );
+
+   /**
+@desc update patient
+@route /api/patients/:id
+@method put
+@access private ()
+
+*/
+module.exports.updatePatient=asyncHandler(async(req,res)=> {
+    const {error}= validateUpdatePatient(req.body);
+    if (error) {
+        res.status(400).json({message:error.details[0].message});
+    }
+    const patient=await Patient.findById(req.params.id)  ;
+    if(!patient){
+        res.status(404).json({message:"patient not found"})
+    }
+    if(req.user.id!== patient.user.toString()){
+        return res.status(403).json({message:"access denied,forddien"});
+    }
+
+    const updatepatient =  await Patient.findByIdAndUpdate(
+        req.params.id,
+        {
+            $set: {
+                FristName:req.body.FirstName,
+                LastName:req.body.LastName,
+                Age: req.body.Age ,
+                Gender: req.body.Gender ,
+                RiskFactorsAndLifeStyle:req.body.RiskFactorsAndLifeStyle,
+                FamilyHistory:req.body.FamilyHistory,
+                NeurologicalExam:req.body.NeurologicalExam,
+                Symptoms:req.body.Symptoms,
+                TreatmentHistory:req.body.TreatmentHistory,
+                Allergies:req.body.Allergies,
+                DurationAndProgressionOfSymptoms:req.body.DurationAndProgressionOfSymptoms,
+                Diagnosis:req.body.Diagnosis,
+                MedicalHistory:req.body.MedicalHistory,
+                Notes:req.body.Notes,
+                BiopsyOrPathologyResults:req.body.BiopsyOrPathologyResults,
+                LabTestResult:req.body.LabTestResult,
+                CurrentMedications:req.body.CurrentMedications,
+        
+            
+    
+            }
+        },{new:true}).populate("user",["-Passward"]);
+        res.status(200).json(updatepatient);
+        
+        
+    
+        
+});

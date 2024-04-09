@@ -131,6 +131,32 @@ function validateCreatePatient(obj){
     return schema.validate(obj);
 };
 
+function validateUpdatePatient(obj){
+    const schema=joi.object
+    ({ 
+        FristName:joi.string().min(3).max(200),
+        LastName:joi.string().min(3).max(200),
+        Age:joi.number().min(0).integer(),
+        Gender:joi.string().min(4).max(6),
+        RiskFactorsAndLifeStyle:joi.string().min(3).max(1000),
+        FamilyHistory:joi.string().min(3).max(1000),
+        NeurologicalExam:joi.string().min(3).max(1000),
+        Symptoms:joi.string().min(3).max(1000),
+        TreatmentHistory:joi.string().min(3).max(1000),
+        Allergies:joi.string().min(3).max(1000),
+        DurationAndProgressionOfSymptoms:joi.string().min(3).max(1000),
+        Diagnosis:joi.string().min(3).max(1000),
+        MedicalHistory:joi.string().min(3).max(1000),
+        Notes:joi.string().min(3).max(1000),
+        BiopsyOrPathologyResults:joi.string().min(3).max(1000),
+        LabTestResult:joi.string().min(3).max(1000),
+        CurrentMedications:joi.string().min(3).max(1000),
+        
+        
+
+    });
+    return schema.validate(obj);
+};
 
 
 const Patient=mongoose.model("Patient",PatientSchema);
@@ -138,4 +164,5 @@ const Patient=mongoose.model("Patient",PatientSchema);
 module.exports={
     Patient,
     validateCreatePatient,
+    validateUpdatePatient,
 }
