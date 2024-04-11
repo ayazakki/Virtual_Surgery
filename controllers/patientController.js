@@ -37,33 +37,21 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
 
 */
 
-module.exports.getPatientByID = asyncHandler(async (req, res) => {
-    try {
-        // Log the decoded user information
-        console.log('Decoded user:', req.user);
+module.exports.getPatientByID=asyncHandler(async(req,res)=>{
+    
+    const patient= await Patient.findById(req.params.id).
+    populate("user",["-Password"]);;
+if(patient){
+    res.status(200).json(patient);
+}
+else{
+    res.status(404).json({message:'The patient with the given ID was not found.'})
+}
+    
 
-        // Find the patient by ID and populate the Surgeon field
-        const patient = await Patient.findById(req.params.id)
-            .populate("Surgeon", ["-Password"]);
+}
+);
 
-        // Check if the patient exists
-        if (!patient) {
-            return res.status(404).json({ message: 'The patient with the given ID was not found.' });
-        }
-
-        // Check if the authenticated user is the owner of the patient record
-        if (req.user.id !== patient.Surgeon.toString()) {
-            return res.status(403).json({ message: "Access denied. You are not authorized to access this patient record." });
-        }
-
-        // If the user is authorized, send the patient record
-        res.status(200).json(patient);
-    } catch (error) {
-        // Handle any errors
-        console.error("Error in getPatientByID:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-});
 
 
 /**
