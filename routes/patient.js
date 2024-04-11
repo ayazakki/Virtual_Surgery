@@ -12,7 +12,7 @@ router.route( '/' )
       .get(verifyToken,paginationPatients)
       .post(verifyToken,addPatient);
 router.route( '/count' )
-      .get(countPatients);
+      .get(verifyToken,countPatients);
 
    
 router.route( '/:id' )
