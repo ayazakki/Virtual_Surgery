@@ -40,7 +40,7 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
 module.exports.getPatientByID=asyncHandler(async(req,res)=>{
     
     const patient= await Patient.findById(req.params.id).
-    populate("user",["-Password"]);;
+    populate("Surgeon",["-Password"]);;
 if(patient){
     res.status(200).json(patient);
 }
