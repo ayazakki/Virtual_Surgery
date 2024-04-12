@@ -1,6 +1,6 @@
 const express= require("express");
 const patientspath=require("./routes/patient");
-const LogUserPath =require("./routes/LogUser");
+const authPath =require("./routes/auth");
 const UsersPath =require("./routes/updateUser");
 const mriscanpath=require('./routes/MRiScan');
 const passwordpath =require("./routes/password");
@@ -43,7 +43,7 @@ app.set('view engine' , 'ejs');
 
 //Routes
 app.use("/api/patients",patientspath);
-app.use("/api/auth",LogUserPath);
+app.use("/api/auth",authPath);
 app.use("/api/users",UsersPath);
 app.use("/api/mriscan",mriscanpath);
 app.use("/api/password",passwordpath);
