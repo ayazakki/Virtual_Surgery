@@ -9,7 +9,12 @@ const MRIScanSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref: 'Patient',
         required: true
-
+    },
+    Surgeon: 
+    { 
+        type : mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
 
     ScanDetalies:
@@ -22,9 +27,12 @@ const MRIScanSchema = new mongoose.Schema({
     },
     Image:
     {
-        type:String,
+        type:Object,
+        default:{
+            url:"",
+            publicId:null,
+        },
         required:true,
-        trim:true,
         
     },
         
@@ -33,34 +41,29 @@ const MRIScanSchema = new mongoose.Schema({
 
 },{timestamps:true});
 
-/*
+
 function validateCreateMRIScan(obj){
     const schema=joi.object
     ({
         Patient:joi.string().required(),
         ScanDetalies:joi.string().min(3).max(1000).required(),
-        Image:joi.string().required()
+        
     });
     return schema.validate(obj);
 };
 function validateUpdateMRIScan(obj){
     const schema=joi.object
     ({  
-        Patient:joi.string(),
         ScanDetalies:joi.string().min(3).max(1000),
-        Image:joi.string()
+
     
     });
     return schema.validate(obj);
 };
-*/
+
 const MRIScan= mongoose.model("MRIScan",MRIScanSchema);
 module.exports = {
     MRIScan,
-    /*
     validateCreateMRIScan,
     validateUpdateMRIScan
-    */
 }
-
-

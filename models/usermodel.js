@@ -60,6 +60,13 @@ const UserSchema = new mongoose.Schema(
    type: Boolean,
    default: false,
   },
+  ProfilePhoto:{
+    type:Object,
+    default:{
+        url:"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png",
+        publicId:null,
+    }
+  },
   isAccountVerified:{
     type:Boolean,
     default:false, 
@@ -71,8 +78,18 @@ const UserSchema = new mongoose.Schema(
    maxlength: 100,
   },
  },
- { timestamps: true }
-);
+ { timestamps: true,
+    toJSON:{virtuals:true}, // Gets virtuals and converts them to regular fields in JSON
+    toObject:{virtuals:true} // Converts back from a JS object to a document on querying 
+});
+
+//populate Patients that Belongs to this user when he/she get his/her profile
+UserSchema.virtual("Patients",{
+    ref:"Patient", //linking with the model name in lower case
+    localField:"_id",//the field
+    foreignField:"Surgeon"//to whichfield in patient model we are linking it to
+});
+
 
 //Generate Token
 UserSchema.methods.generateToken = function(){
@@ -93,6 +110,8 @@ function validateRegister(obj) {
      Title: joi.string().min(3).max(200).required(),
      Specialist: joi.string().min(3).max(200).required(),
      Password: passwordComplexity().required(),
+     IsAdmin:joi.bool(),
+     IsAccountVerified:joi.bool(),
     });
     return schema.validate(obj);
 };
@@ -120,8 +139,6 @@ function validateUpdate(obj) {
     });
     return schema.validate(obj);
 };
-//validate model
-const User = mongoose.model("User", UserSchema);
 
 //validate Email
 function validateEmail(obj) {
@@ -138,6 +155,9 @@ function validateNewPassword(obj){
     });
     return schema.validate(obj);
 }
+
+//validate model
+const User = mongoose.model("User", UserSchema);
 
 module.exports={
     User,

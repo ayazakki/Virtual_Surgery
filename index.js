@@ -1,7 +1,7 @@
 const express= require("express");
 const patientspath=require("./routes/patient");
 const authPath =require("./routes/auth");
-const UsersPath =require("./routes/updateUser");
+const UsersPath =require("./routes/users");
 const mriscanpath=require('./routes/MRiScan');
 const passwordpath =require("./routes/password");
 const upload=require("./routes/upload");
