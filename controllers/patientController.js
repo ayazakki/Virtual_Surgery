@@ -45,7 +45,7 @@ module.exports.getPatientByID = asyncHandler(async (req, res) => {
         res.status(404).json({ message: 'The patient with the given ID was not found.' })
     }
     if (req.user.id !== patient.Surgeon.toString()) {
-        return res.status(403).json({ message: "access denied,forddien" });
+        return res.status(403).json({ message: "Access denied. You are not authorized to access this patient record." });
     }
 
     else {
