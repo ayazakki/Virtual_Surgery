@@ -5,7 +5,7 @@ const path= require("path");
 const{User,validateUpdate}=require("../models/usermodel");
 const{Patient}=require("../models/Patient");
 const{MRIScan}=require("../models/MRimodel");
-const{cloudinaryUploadImage,cloudinaryRemoveImage,cloudinaryRemoveMultipleImage}=require("../utils/cloudinary")
+const{cloudinaryUploadImage,cloudinaryRemoveImage,cloudinaryRemoveMultipleImage}=require("../utils/cloudinary");
 const fs =require("fs");
 
 /** 
