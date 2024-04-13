@@ -16,7 +16,7 @@ router.route( '/count' )
 
    
 router.route( '/:id' )
-      .get(validateObjectId,getPatientByID)
+      .get(validateObjectId,verifyToken,getPatientByID)
       .put(validateObjectId,verifyToken,updatePatient)
       .delete(validateObjectId,verifyToken,deletePatient);
 
