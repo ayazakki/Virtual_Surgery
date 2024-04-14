@@ -20,7 +20,7 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
     
         // Retrieve patients related to the user (assuming the user has a field like surgeonId)
         const patientList = await Patient.find({ Surgeon: user.id })
-        .populate("Surgeon",["_id","First_Name","Last_Name"]).sort({createdAt:-1});
+        .populate("Surgeon",["_id","FirstName","LastName"]).sort({createdAt:-1});
         res.status(200).json(patientList);
       } catch (error) {
         console.log(error);
