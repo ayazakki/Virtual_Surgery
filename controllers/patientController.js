@@ -216,22 +216,32 @@ module.exports.countPatients = asyncHandler(async (req, res) => {
 module.exports.paginationPatients = asyncHandler(async (req, res) => {
     const patientPerPage = 3;
     const { pageNumber } = req.query;
+    console.log("pageNumber:", pageNumber);
+
     let PatientList;
 
     if (pageNumber) {
-        PatientList = await Patient.find({ Surgeon: req.Surgeon.id })
-            .skip((pageNumber - 1) * patientPerPage)
+        const page = parseInt(pageNumber, 10);
+        console.log("page:", page);
+
+        const skipCount = (page - 1) * patientPerPage;
+        console.log("skipCount:", skipCount);
+
+        PatientList = await Patient.find({ Surgeon: req.user.id })
+            .skip(skipCount)
             .limit(patientPerPage)
-            .populate("Surgeon", ["FirstName", "LastName"]).sort({ createdAt: -1 });
+            .populate("Surgeon", ["FirstName", "LastName"])
+            .sort({ createdAt: -1 });
 
+        console.log("Query executed:", PatientList);
+    } else {
+        PatientList = await Patient.find({ Surgeon: req.user.id })
+            .populate("Surgeon", ["FirstName", "LastName"])
+            .sort({ createdAt: -1 });
     }
-    else {
-        PatientList = await Patient.find({ Surgeon: req.Surgeon.id })
-            .populate("Surgeon", ["FirstName", "LastName"]).sort({ createdAt: -1 });
 
-    }
     res.status(200).json(PatientList);
-
 });
+
 
 
