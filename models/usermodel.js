@@ -86,7 +86,7 @@ const UserSchema = new mongoose.Schema(
 //populate Patients that Belongs to this user when he/she get his/her profile
 UserSchema.virtual("Patients",{
     ref:"Patient", //linking with the model name in lower case
-    localField:"_id",//the field
+   //  localField:"_id",//the field
     foreignField:"Surgeon"//to whichfield in patient model we are linking it to
 });
 
