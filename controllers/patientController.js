@@ -214,33 +214,30 @@ module.exports.countPatients = asyncHandler(async (req, res) => {
 @access private (only logged in user)
 */
 module.exports.paginationPatients = asyncHandler(async (req, res) => {
-    const patientPerPage = 3;
-    const { pageNumber } = req.query;
-    console.log("pageNumber:", pageNumber);
+    try {
+        // Extract page number from query parameters
+        const pageNumber = parseInt(req.query.pageNumber) || 1; // Default to page 1 if not provided
 
-    let PatientList;
+        // Number of patients per page
+        const patientsPerPage = 3; // Adjust as needed
 
-    if (pageNumber) {
-        const page = parseInt(pageNumber, 10);
-        console.log("page:", page);
+        // Calculate the skip count based on page number
+        const skipCount = (pageNumber - 1) * patientsPerPage;
 
-        const skipCount = (page - 1) * patientPerPage;
-        console.log("skipCount:", skipCount);
-
-        PatientList = await Patient.find({ Surgeon: req.user.id })
+        // Fetch paginated patients from the database
+        const patients = await Patient.find({ Surgeon: req.user.id })
             .skip(skipCount)
-            .limit(patientPerPage)
-            .populate("Surgeon", ["FirstName", "LastName"])
+            .limit(patientsPerPage)
+            .populate('Surgeon', ['FirstName', 'LastName'])
             .sort({ createdAt: -1 });
 
-        console.log("Query executed:", PatientList);
-    } else {
-        PatientList = await Patient.find({ Surgeon: req.user.id })
-            .populate("Surgeon", ["FirstName", "LastName"])
-            .sort({ createdAt: -1 });
+        // Send the paginated patients as JSON response
+        res.status(200).json(patients);
+    } catch (error) {
+        // Handle errors
+        console.error('Error fetching paginated patients:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    res.status(200).json(PatientList);
 });
 
 
