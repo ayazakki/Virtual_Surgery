@@ -214,27 +214,24 @@ module.exports.countPatients = asyncHandler(async (req, res) => {
 @access private (only logged in user)
 */
 module.exports.paginationPatients = asyncHandler(async (req, res) => {
+    const patientPerPage = 3;
     const { pageNumber } = req.query;
-    const patientPerPage = 2;
+    let PatientList;
 
-    try {
-        // Extract the user ID from req.user
-        const surgeonId = req.user.id;
-
-        // Fetch patients associated with the authenticated user
-        const patientList = await Patient.find({ Surgeon: surgeonId })
+    if (pageNumber) {
+        PatientList = await Patient.find({ user: req.user.id })
             .skip((pageNumber - 1) * patientPerPage)
             .limit(patientPerPage)
             .populate("Surgeon", ["_id", "First_Name", "Last_Name"]);
 
-        // Send the filtered patient list as the response
-        res.status(200).json(patientList);
-    } catch (error) {
-        // Handle errors
-        console.error("Error fetching patients:", error);
-        res.status(500).json({ message: "Internal server error" });
     }
-});
+    else {
+        PatientList = await Patient.find({ user: req.user.id })
+            .populate("Surgeon", ["_id", "First_Name", "Last_Name"]).sort({ createdAt: -1 });
 
+    }
+    res.status(200).json(PatientList);
+
+});
 
 
