@@ -20,7 +20,7 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
     
         // Retrieve patients related to the user (assuming the user has a field like surgeonId)
         const patientList = await Patient.find({ Surgeon: user.id })
-        .populate("Surgeon",["_id","FirstName","LastName"]).sort({createdAt:-1});
+        .populate("Surgeon",["FirstName","LastName"]).sort({createdAt:-1});
         res.status(200).json(patientList);
       } catch (error) {
         console.log(error);
@@ -228,7 +228,7 @@ module.exports.paginationPatients = asyncHandler(async (req, res) => {
         const patients = await Patient.find({ Surgeon: req.user.id })
             .skip(skipCount)
             .limit(patientsPerPage)
-            .populate('Surgeon', ['FirstName', 'LastName'])
+            .populate("Surgeon", ["FirstName", "LastName"])
             .sort({ createdAt: -1 });
 
         // Send the paginated patients as JSON response
