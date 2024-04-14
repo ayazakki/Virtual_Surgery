@@ -222,12 +222,12 @@ module.exports.paginationPatients = asyncHandler(async (req, res) => {
         PatientList = await Patient.find({ Surgeon: req.user.id })
             .skip((pageNumber - 1) * patientPerPage)
             .limit(patientPerPage)
-            .populate("Surgeon", ["_id", "FirstName", "LastName"]).sort({ createdAt: -1 });
+            .populate("Surgeon", ["FirstName", "LastName"]).sort({ createdAt: -1 });
 
     }
     else {
         PatientList = await Patient.find({ Surgeon: req.user.id })
-            .populate("Surgeon", ["_id", "FirstName", "LastName"]).sort({ createdAt: -1 });
+            .populate("Surgeon", ["FirstName", "LastName"]).sort({ createdAt: -1 });
 
     }
     res.status(200).json(PatientList);
