@@ -21,7 +21,7 @@ const Photoupload =multer({
         if(file.mimetype.startsWith("image")){
             cb(null,true);
         }else{
-            cb({message:"Not an image"},false);
+            cb({message:"Unsupported file format"},false);
         }
     }
 
