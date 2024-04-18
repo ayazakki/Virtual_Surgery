@@ -123,7 +123,7 @@ module.exports.getUserscount=asyncHandler(async(req,res) =>{
 @method POST
 @access private (only logged in)
 */
-
+/*
 module.exports.profilePhotoUpload=asyncHandler(async(req,res)=>{
 
     // 1- Validation
@@ -147,21 +147,52 @@ module.exports.profilePhotoUpload=asyncHandler(async(req,res)=>{
     
     // 6- Change the profile photo field in the DB
     user.ProfilePhoto={
-        url:result.url,
-        publicId:result.publicId,
+        url:result.secure_url,
+        publicId:result.public_id,
     }
     await user.save();
 
     // 7- Send response to client
     res.status(200).json({
         message:"Your profile photo is uploaded successfully",
-        ProfilePhoto:{ url: result.url, publicId: result.publicId}
+        ProfilePhoto:{ url: result.secure_url, publicId: result.public_id}
 });
     // 8- Remove image from the server
         fs.unlinkSync(imagePath);
 
 
 });
+*/
+module.exports.profilePhotoUpload = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file provided' });
+        }
 
+        const imagePath = path.join(__dirname, `../images/${req.file.filename}`);
+        const result = await cloudinaryUploadImage(imagePath);
+
+        const user = await User.findById(req.user.id);
+        if (user.ProfilePhoto.publicId) {
+            await cloudinaryRemoveImage(user.ProfilePhoto.publicId);
+        }
+
+        user.ProfilePhoto = {
+            url: result.secure_url,
+            publicId: result.public_id,
+        };
+        await user.save();
+
+        res.status(200).json({
+            message: "Your profile photo is uploaded successfully",
+            ProfilePhoto: { url: result.secure_url, publicId: result.public_id }
+        });
+
+        fs.unlinkSync(imagePath);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
 
 
