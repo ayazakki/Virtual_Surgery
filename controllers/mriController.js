@@ -6,7 +6,7 @@ const{validateCreateMRIScan,validateUpdateMRIScan,MRIScan} = require("../models/
 
 /** 
 @desc Get all MRISCAN
-@route /api/MRISCAN
+@route /api/mriscan
 @method GET
 @access Public
 
@@ -19,19 +19,19 @@ module.exports.getAllMRI = asyncHandler(async (req,res) => {
     if(pageNumber){
 
         scans= await MRIScan.find({}).sort().skip((pageNumber -1)*SCAN_PER_PAGE).limit(SCAN_PER_PAGE)
-        .populate("Patient",["_id","FristName","LastName"]);
+        .populate("Patient",["_id","First_Name","Last_Name"]);
     }
     else{
         scans= await MRIScan.find({}).sort({createdAt:-1})
-        .populate("Patient",["_id","FristName","LastName"]);
+        .populate("Patient",["_id","First_Name","Last_Name"]);
     }
 
     res.status(200).json(scans);
 });
 
 /** 
-@desc Get MRIScan  by id
-@route /api/MRIScan/:id
+@desc Get MRIScan by id
+@route /api/mriscan/:id
 @method GET
 
 @access Public
@@ -50,7 +50,7 @@ module.exports. getMRIById =asyncHandler(async(req,res)=>{
 });
 /** 
 @desc add new MriSCAN
-@route /api/MRI
+@route /api/mriscan
 @method post
 @access private(only log in user)
 */
@@ -88,7 +88,7 @@ module.exports.createNewMRI = asyncHandler( async (req,res)=>{
 );
 /** 
 @desc update all MRISCAN
-@route /api/MRISCAN/:id
+@route /api/mriscan/:id
 @method put
 @access private only user 
 */
@@ -119,7 +119,7 @@ module.exports.updateMRI=asyncHandler(async(req,res)=> {
 );
 /** 
 @desc update mri image 
-@route /api/MRISCAN/upload-image/:/id
+@route /api/mriscan/upload-image/:id
 @method put
 @access private
 */
@@ -156,14 +156,14 @@ module.exports.updateMRIImage=asyncHandler(async(req,res)=> {
         }
     },{ new : true} ).populate('Patient');
     res.status(200).json(updateMRI);
-    //remov efrom server
+    //remove from server
     fs.unlinkSync(imagePath);
 
 }
 );
 /** 
 @desc delete all mri
-@route /api/mris/:id
+@route /api/mriscan/:id
 @method delete
 @access privat e only user 
 */

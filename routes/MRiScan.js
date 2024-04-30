@@ -8,7 +8,7 @@ const{getAllMRI,getMRIById,createNewMRI,updateMRI,deleteMRI,updateMRIImage}=requ
 
 //api/
 router.route('/').post(verifyToken,Photoupload.single( 'image' ), createNewMRI)
-                .get(getAllMRI);
+                .get(verifyToken,getAllMRI);
 
     //api/mriscan/:id
 router.route("/:id")

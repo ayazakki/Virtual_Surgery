@@ -132,7 +132,7 @@ function validateUpdate(obj) {
      UserName: joi.string().min(3).max(200),
      Email: joi.string().trim().min(5).max(100).email(),
      Age: joi.number().min(0),
-     Gender: joi.string().min(3).max(5),
+     Gender: joi.string().min(3).max(6),
      Title: joi.string().min(3).max(200),
      Specialist: joi.string().min(3).max(200),
      Password: passwordComplexity(),
