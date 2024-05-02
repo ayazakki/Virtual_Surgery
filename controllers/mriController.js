@@ -65,10 +65,9 @@ module.exports.createNewMRI = asyncHandler( async (req,res)=>{
     res.status(400).send(error.details[0].message);
     }
     //3.upload photo
-    //const imagePath=path.join(__dirname,`../images/${req.file.filename}`);
-    //const result = await cloudinaryUploadImage(imagePath);
+    const imagePath=path.join(__dirname,`../images/${req.file.filename}`);
+    const result = await cloudinaryUploadImage(imagePath);
 
-    const result = await cloudinaryUploadImage(req.file.path);
 
     //4.create new MRISCAN
     const scan = await MRIScan.create(
@@ -84,8 +83,7 @@ module.exports.createNewMRI = asyncHandler( async (req,res)=>{
     //5.send response to the client 
         res.status(201).json(scan);      
     //6. remove image from the server
-        //fs.unlinkSync(imagePath);
-        fs.unlinkSync(req.file.path);
+        fs.unlinkSync(imagePath);
 
 
 }
