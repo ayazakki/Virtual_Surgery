@@ -33,5 +33,6 @@ const Photoupload =multer({
     }
 })
 module.exports={
-    Photoupload,
+    //Photoupload,
+    photostorage,
 }
