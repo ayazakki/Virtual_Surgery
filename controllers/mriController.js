@@ -54,6 +54,44 @@ module.exports. getMRIById =asyncHandler(async(req,res)=>{
 @method post
 @access private(only log in user)
 */
+module.exports.createNewMRI = async (req, res) => {
+    try {
+        // 1. Validation for image
+        if (!req.file) {
+            return res.status(400).send('No image uploaded');
+        }
+
+        // 2. Validation for data
+        const { error } = validateCreateMRIScan(req.body);
+        if (error) {
+            return res.status(400).send(error.details[0].message);
+        }
+
+        // 3. Upload photo to Cloudinary
+        const result = await cloudinaryUploadImage(req.file.path);
+
+        // 4. Create new MRISCAN
+        const scan = await MRIScan.create({
+            Surgeon: req.user.id,
+            Patient: req.body.Patient,
+            ScanDetalies: req.body.ScanDetalies,
+            Image: {
+                url: result.secure_url,
+                publicId: result.public_id,
+            }
+        });
+
+        // 5. Send response to the client
+        res.status(201).json(scan);
+
+        // 6. Remove image from the server
+        fs.unlinkSync(req.file.path);
+    } catch (error) {
+        console.error('Error creating MRI scan:', error);
+        res.status(500).send('Internal server error');
+    }
+};
+/* 
 module.exports.createNewMRI = asyncHandler( async (req,res)=>{
     //1.validation for image 
     if(!req.file) {
@@ -65,10 +103,9 @@ module.exports.createNewMRI = asyncHandler( async (req,res)=>{
     res.status(400).send(error.details[0].message);
     }
     //3.upload photo
-    //const imagePath=path.join(__dirname,`../images/${req.file.filename}`);
-    //const result = await cloudinaryUploadImage(imagePath);
+    const imagePath=path.join(__dirname,`../images/${req.file.filename}`);
+    const result = await cloudinaryUploadImage(imagePath);
 
-    const result = await cloudinaryUploadImage(req.file.path);
 
     //4.create new MRISCAN
     const scan = await MRIScan.create(
@@ -84,12 +121,12 @@ module.exports.createNewMRI = asyncHandler( async (req,res)=>{
     //5.send response to the client 
         res.status(201).json(scan);      
     //6. remove image from the server
-        //fs.unlinkSync(imagePath);
-        fs.unlinkSync(req.file.path);
+        fs.unlinkSync(imagePath);
 
 
 }
 );
+*/
 /** 
 @desc update all MRISCAN
 @route /api/mriscan/:id

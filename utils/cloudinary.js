@@ -12,7 +12,6 @@ cloudinary.config({
 const cloudinaryUploadImage= async (fileToUpload)=>{
     try {
         const data = await cloudinary.uploader.upload(fileToUpload,{
-            folder: 'mri_scans',
             resource_type:'auto',
         });
         return data;
