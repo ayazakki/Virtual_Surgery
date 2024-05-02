@@ -69,7 +69,7 @@ module.exports.createNewMRI = asyncHandler( async (req,res)=>{
     const result = await cloudinaryUploadImage(imagePath);
     //4.create new MRISCAN
     const scan = await MRIScan.create(
-        {   user:req.user.id,
+        {   Surgeon:req.user.id,
             Patient:req.body.Patient,
             ScanDetalies:req.body.ScanDetalies,
             Image:{
