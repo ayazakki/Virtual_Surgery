@@ -13,8 +13,6 @@ const cloudinaryUploadImage= async (fileToUpload)=>{
     try {
         const data = await cloudinary.uploader.upload(fileToUpload,{
             resource_type:'auto',
-            //new
-            public_id: path.basename(fileToUpload, path.extname(fileToUpload))
         });
         return data;
     } catch (error) {
