@@ -9,7 +9,7 @@ cloudinary.config({
 });
 
 //cloudinary upload image  (the old function)
-/*
+
 const cloudinaryUploadImage= async (fileToUpload)=>{
     try {
         const data = await cloudinary.uploader.upload(fileToUpload,{
@@ -21,9 +21,10 @@ const cloudinaryUploadImage= async (fileToUpload)=>{
         
     }
 }
-*/
+
 
 // Function to upload image to Cloudinary (function from chat)
+/*
 const cloudinaryUploadImage = async (fileToUpload, folderName) => {
     try {
         const data = await cloudinary.uploader.upload(fileToUpload, {
@@ -35,6 +36,7 @@ const cloudinaryUploadImage = async (fileToUpload, folderName) => {
         return error;
     }
 };
+*/
 
 
 //cloudinary remove image

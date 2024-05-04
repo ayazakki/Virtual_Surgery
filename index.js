@@ -13,6 +13,7 @@ const helmet =require("helmet");
 const cors = require("cors");
 const connectToDB =require("./config/db");
 const compression =require("compression");
+
 //const swaggerjsdoc = require("swagger-jsdoc");
 //const swaggerui = require("swagger-ui-express");
 
@@ -22,8 +23,10 @@ connectToDB();
 //init app
 const app = express();
 
-//static folder
+//static folder (old one)
 app.use(express.static(path.join(__dirname,"images")));
+
+
 
 //apply middleware 
 app.use(express.json());

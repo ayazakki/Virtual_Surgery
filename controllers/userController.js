@@ -123,7 +123,7 @@ module.exports.getUserscount=asyncHandler(async(req,res) =>{
 @method POST
 @access private (only logged in)
 */
-/* (The old Function)
+
 module.exports.profilePhotoUpload = async (req, res) => {
     try {
          // 1- Validation
@@ -164,40 +164,5 @@ module.exports.profilePhotoUpload = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
-*/
 
-module.exports.profilePhotoUpload = async (req, res) => {
-    try {
-        // 1- Validation
-        if (!req.file) {
-            return res.status(400).json({ message: 'No file provided' });
-        }
 
-        // 2- upload to Cloudinary
-        const result = await cloudinary.cloudinaryUploadImage(req.file.path, 'profilephotos'); // Specify folder name
-
-        // 3- Get the user from DB
-        const user = await User.findById(req.user.id);
-
-        // 4- Delete the old profile photo if it exists
-        if (user.ProfilePhoto.publicId !== null) {
-            await cloudinary.cloudinaryRemoveImage(user.ProfilePhoto.publicId);
-        }
-
-        // 5- Change the profile photo field in the DB
-        user.ProfilePhoto = {
-            url: result.secure_url,
-            publicId: result.public_id,
-        };
-        await user.save();
-
-        // 6- Send response to client
-        res.status(200).json({
-            message: "Your profile photo is uploaded successfully",
-            ProfilePhoto: { url: result.secure_url, publicId: result.public_id }
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-};

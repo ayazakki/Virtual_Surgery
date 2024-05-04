@@ -59,13 +59,14 @@ const UserSchema = new mongoose.Schema(
   IsAdmin: {
    type: Boolean,
    default: false,
-  },
+  }, 
   ProfilePhoto:{
     type:Object,
     default:{
         url:"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png",
         publicId:null,
     }
+   
   },
   isAccountVerified:{
     type:Boolean,
