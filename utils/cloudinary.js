@@ -8,7 +8,8 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-//cloudinary upload image
+//cloudinary upload image  (the old function)
+/*
 const cloudinaryUploadImage= async (fileToUpload)=>{
     try {
         const data = await cloudinary.uploader.upload(fileToUpload,{
@@ -20,6 +21,22 @@ const cloudinaryUploadImage= async (fileToUpload)=>{
         
     }
 }
+*/
+
+// Function to upload image to Cloudinary (function from chat)
+const cloudinaryUploadImage = async (fileToUpload, folderName) => {
+    try {
+        const data = await cloudinary.uploader.upload(fileToUpload, {
+            folder: folderName, // Specify the folder
+            resource_type: 'auto'
+        });
+        return data;
+    } catch (error) {
+        return error;
+    }
+};
+
+
 //cloudinary remove image
 const cloudinaryRemoveImage= async (imagePublicId)=>{
     try {
