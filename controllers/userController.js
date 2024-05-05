@@ -172,13 +172,13 @@ module.exports.profilePhotoUpload = async (req, res) => {
 @access private (only logged in)
 */
 /* new one function taghreed */
+/*
 module.exports.profilePhotoUpload=asyncHandler(async(req,res)=>{
     if(!req.file){
         return res.status(400).json({message:'no file provided'});
     };
     //3.upload photo
     const imagePath=path.join(__dirname,`../images/${req.file.filename}`);
-
     const result = await cloudinaryUploadImage(imagePath);
     console.log(result);
 
@@ -199,10 +199,56 @@ module.exports.profilePhotoUpload=asyncHandler(async(req,res)=>{
                 url:result.secure_url,
                 publicId:result.public_id,
     }
-    
 });
+
     //6. remove image from the server
         fs.unlinkSync(imagePath);
-
-
 })
+*/
+
+/*from chat*/ 
+module.exports.profilePhotoUpload = asyncHandler(async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file provided' });
+    }
+
+    // Construct the file path
+    const imagePath = path.join(__dirname, `../images/${req.file.filename}`);
+
+    // Check if the file exists
+    if (!fs.existsSync(imagePath)) {
+        return res.status(400).json({ message: 'File does not exist' });
+    }
+
+    try {
+        // Upload photo to Cloudinary
+        const result = await cloudinaryUploadImage(imagePath);
+
+        // Update user's profile photo
+        const user = await User.findById(req.user.id);
+        if (user.ProfilePhoto && user.ProfilePhoto.publicId !== null) {
+            await cloudinaryRemoveImage(user.ProfilePhoto.publicId);
+        }
+
+        user.ProfilePhoto = {
+            url: result.secure_url,
+            publicId: result.public_id,
+        };
+        await user.save();
+
+        // Remove image from the server
+        fs.unlinkSync(imagePath);
+
+        // Respond with success message
+        res.status(200).json({
+            message: "Profile photo uploaded successfully",
+            ProfilePhoto: {
+                url: result.secure_url,
+                publicId: result.public_id,
+            }
+        });
+    } catch (error) {
+        console.error("Error uploading profile photo:", error);
+        res.status(500).json({ message: "Failed to upload profile photo" });
+    }
+});

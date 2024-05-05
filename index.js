@@ -13,7 +13,7 @@ const helmet =require("helmet");
 const cors = require("cors");
 const connectToDB =require("./config/db");
 const compression =require("compression");
-
+const cloudinary = require("./utils/cloudinary");
 //const swaggerjsdoc = require("swagger-jsdoc");
 //const swaggerui = require("swagger-ui-express");
 
