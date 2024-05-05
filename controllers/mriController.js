@@ -187,7 +187,7 @@ module.exports.updateMRIImage=asyncHandler(async(req,res)=> {
     if(!scan){
         return res.status(404).json({message:'MRI not found'});
     }
-    if(req.user.id !== scan.user.toString()){
+    if(req.user.id !== scan.Surgeon.toString()){
         return res.status(403).json({message:'access denied'});
     }
 
