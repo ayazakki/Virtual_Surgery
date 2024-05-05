@@ -45,7 +45,7 @@ module.exports.getAllMRI = asyncHandler(async (req, res) => {
 @access (only logged in surgeon)
 
 */
-/*  old one
+
 module.exports. getMRIById =asyncHandler(async(req,res)=>{
     const scans = await MRIScan.findById(req.params.id).populate("Patient");
     if(!scans){
@@ -56,31 +56,6 @@ module.exports. getMRIById =asyncHandler(async(req,res)=>{
     }
     res.status(200).json(scans);
 
-});
-*/
-
-/*new one from chat*/
-module.exports.getMRIById = asyncHandler(async (req, res) => {
-    try {
-        // Find the MRIScan by ID and populate the associated patient
-        const scan = await MRIScan.findById(req.params.id).populate("Patient");
-
-        // Check if the MRIScan exists
-        if (!scan) {
-            return res.status(404).json({ message: 'The MRIScan with the given ID was not found.' });
-        }
-
-        // Ensure the current user is the owner of the MRIScan
-        if (req.user.id !== scan.user.toString()) {
-            return res.status(403).json({ message: 'Access denied' });
-        }
-
-        // Return the MRIScan if the user is the owner
-        res.status(200).json(scan);
-    } catch (error) {
-        console.error('Error fetching MRIScan by ID:', error);
-        res.status(500).json({ message: 'Failed to fetch MRIScan' });
-    }
 });
 
 
