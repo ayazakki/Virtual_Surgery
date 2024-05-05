@@ -51,7 +51,7 @@ module.exports. getMRIById =asyncHandler(async(req,res)=>{
     if(!scans){
         res.status(404).json({message:'The MRIScan with the given ID was not found.'})
     }
-    if(req.user.id !== scans.user.toString()){
+    if(req.user.id !== scans.Surgeon.toString()){
         return res.status(403).json({message:'access denied'});
     }
     res.status(200).json(scans);
