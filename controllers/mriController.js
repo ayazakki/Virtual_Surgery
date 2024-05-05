@@ -140,7 +140,7 @@ module.exports.createNewMRI = asyncHandler( async (req,res)=>{
 );
 */
 /** 
-@desc update all MRISCAN
+@desc update MRISCAN details
 @route /api/mriscan/:id
 @method put
 @access private only user 
@@ -157,7 +157,7 @@ module.exports.updateMRI=asyncHandler(async(req,res)=> {
     if(!scan){
         return res.status(404).json({message:'MRI not found'});
     }
-    if(req.user.id !== scan.user.toString()){
+    if(req.user.id !== scan.Surgeon.toString()){
         return res.status(403).json({message:'access denied'});}
 
     const updateMRI=await MRIScan.findByIdAndUpdate(req.params.id,
