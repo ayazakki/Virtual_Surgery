@@ -123,7 +123,7 @@ module.exports.getUserscount=asyncHandler(async(req,res) =>{
 @method POST
 @access private (only logged in)
 */
-
+/* (old function)
 module.exports.profilePhotoUpload = async (req, res) => {
     try {
          // 1- Validation
@@ -164,5 +164,45 @@ module.exports.profilePhotoUpload = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+*/
+/** 
+@desc profile photo upload
+@route /api/Users/profile-photo-upload
+@method POST
+@access private (only logged in)
+*/
+/* new one function taghreed */
+module.exports.profilePhotoUpload=asyncHandler(async(req,res)=>{
+    if(!req.file){
+        return res.status(400).json({message:'no file provided'});
+    };
+    //3.upload photo
+    const imagePath=path.join(__dirname,`../images/${req.file.filename}`);
+
+    const result = await cloudinaryUploadImage(imagePath);
+    console.log(result);
+
+    //4.create 
+    const user = await User.findById(req.user.id);
+    if(user.ProfilePhoto.publicId !== null)  {
+        await cloudinaryRemoveImage(user.ProfilePhoto.publicId);
+    }    
+    user.ProfilePhoto={
+                url:result.secure_url,
+                publicId:result.public_id,
+    }
+    await user.save();
+    res.status(200).
+    json({
+        message:"is already profile photo uploaded",
+        ProfilePhoto:{
+                url:result.secure_url,
+                publicId:result.public_id,
+    }
+    
+});
+    //6. remove image from the server
+        fs.unlinkSync(imagePath);
 
 
+})
