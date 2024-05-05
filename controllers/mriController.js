@@ -12,22 +12,30 @@ const{validateCreateMRIScan,validateUpdateMRIScan,MRIScan} = require("../models/
 
 */ 
 
-module.exports.getAllMRI = asyncHandler(async (req,res) => {
-    const SCAN_PER_PAGE=3;
-    const{pageNumber}= req.query;
-    let scans;
-    if(pageNumber){
+module.exports.getAllMRI = asyncHandler(async (req, res) => {
+    const SCAN_PER_PAGE = 3;
+    const { pageNumber } = req.query;
 
-        scans= await MRIScan.find({}).sort().skip((pageNumber -1)*SCAN_PER_PAGE).limit(SCAN_PER_PAGE)
-        .populate("Patient",["_id","First_Name","Last_Name"]);
-    }
-    else{
-        scans= await MRIScan.find({}).sort({createdAt:-1})
-        .populate("Patient",["_id","First_Name","Last_Name"]);
+    // Assuming the surgeon's ID is stored in req.user.id
+    const surgeonId = req.user.id;
+
+    let scans;
+
+    if (pageNumber) {
+        scans = await MRIScan.find({ Surgeon: surgeonId }) // Filter scans by surgeon's ID
+            .sort()
+            .skip((pageNumber - 1) * SCAN_PER_PAGE)
+            .limit(SCAN_PER_PAGE)
+            .populate("Patient", ["_id", "First_Name", "Last_Name"]);
+    } else {
+        scans = await MRIScan.find({ Surgeon: surgeonId }) // Filter scans by surgeon's ID
+            .sort({ createdAt: -1 })
+            .populate("Patient", ["_id", "First_Name", "Last_Name"]);
     }
 
     res.status(200).json(scans);
 });
+
 
 /** 
 @desc Get MRIScan by id
