@@ -208,6 +208,10 @@ module.exports.profilePhotoUpload=asyncHandler(async(req,res)=>{
 
 /*from chat*/ 
 module.exports.profilePhotoUpload = asyncHandler(async (req, res) => {
+    // Log the image path and file name
+    console.log('Image path:', imagePath);
+    console.log('File name:', req.file.filename);
+
     if (!req.file) {
         return res.status(400).json({ message: 'No file provided' });
     }
@@ -223,6 +227,7 @@ module.exports.profilePhotoUpload = asyncHandler(async (req, res) => {
     try {
         // Upload photo to Cloudinary
         const result = await cloudinaryUploadImage(imagePath);
+        console.log(result);
 
         // Update user's profile photo
         const user = await User.findById(req.user.id);
