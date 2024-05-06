@@ -9,7 +9,7 @@ cloudinary.config({
 });
 
 //cloudinary upload image  (the old function)
-/* 
+
 const cloudinaryUploadImage= async (fileToUpload)=>{
     try {
         const data = await cloudinary.uploader.upload(fileToUpload,{
@@ -21,33 +21,6 @@ const cloudinaryUploadImage= async (fileToUpload)=>{
         
     }
 }
-*/
-/*buffer */
-const cloudinaryUploadImage = async (imageBuffer) => {
-    try {
-        const data = await cloudinary.uploader.upload(imageBuffer, {
-            resource_type: 'auto',
-        });
-        return data;
-    } catch (error) {
-        return error;
-    }
-};
-
-// Function to upload image to Cloudinary (function from chat)
-/*
-const cloudinaryUploadImage = async (fileToUpload, folderName) => {
-    try {
-        const data = await cloudinary.uploader.upload(fileToUpload, {
-            folder: folderName, // Specify the folder
-            resource_type: 'auto'
-        });
-        return data;
-    } catch (error) {
-        return error;
-    }
-};
-*/
 
 
 //cloudinary remove image
