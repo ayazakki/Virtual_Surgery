@@ -259,6 +259,7 @@ module.exports.profilePhotoUpload = asyncHandler(async (req, res) => {
 });
 */
 /*new code without storing images locally */
+/* 
 module.exports.profilePhotoUpload = asyncHandler(async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No file provided' });
@@ -267,6 +268,43 @@ module.exports.profilePhotoUpload = asyncHandler(async (req, res) => {
     try {
         // Upload photo to Cloudinary
         const result = await cloudinaryUploadImage(req.file.path); // Upload directly from req.file.path
+        
+        // Update user's profile photo
+        const user = await User.findById(req.user.id);
+        if (user.ProfilePhoto && user.ProfilePhoto.publicId !== null) {
+            await cloudinaryRemoveImage(user.ProfilePhoto.publicId);
+        }
+
+        user.ProfilePhoto = {
+            url: result.secure_url,
+            publicId: result.public_id,
+        };
+        await user.save();
+
+        // Respond with success message
+        res.status(200).json({
+            message: "Profile photo uploaded successfully",
+            ProfilePhoto: {
+                url: result.secure_url,
+                publicId: result.public_id,
+            }
+        });
+
+    } catch (error) {
+        console.error("Error uploading profile photo:", error);
+        res.status(500).json({ message: "Failed to upload profile photo" });
+    }
+});
+*/
+/*buffer */
+module.exports.profilePhotoUpload = asyncHandler(async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file provided' });
+    }
+
+    try {
+        // Upload photo to Cloudinary directly from buffer
+        const result = await cloudinaryUploadImage(req.file.buffer);
         
         // Update user's profile photo
         const user = await User.findById(req.user.id);
