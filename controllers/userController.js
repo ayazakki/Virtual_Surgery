@@ -223,12 +223,10 @@ module.exports.profilePhotoUpload = asyncHandler(async (req, res) => {
     try {
         // Upload photo to Cloudinary
         const result = await cloudinaryUploadImage(imagePath);
-        console.log(result);
 
         // Update user's profile photo
         const user = await User.findById(req.user.id);
-        // removed from f condition user.ProfilePhoto &&
-        if ( user.ProfilePhoto.publicId !== null) {
+        if (user.ProfilePhoto && user.ProfilePhoto.publicId !== null) {
             await cloudinaryRemoveImage(user.ProfilePhoto.publicId);
         }
 
