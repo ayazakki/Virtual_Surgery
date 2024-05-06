@@ -172,7 +172,7 @@ module.exports.profilePhotoUpload = async (req, res) => {
 @access private (only logged in)
 */
 /* new one function taghreed */
-
+/*
 module.exports.profilePhotoUpload=asyncHandler(async(req,res)=>{
     if(!req.file){
         return res.status(400).json({message:'no file provided'});
@@ -204,5 +204,42 @@ module.exports.profilePhotoUpload=asyncHandler(async(req,res)=>{
     //6. remove image from the server
         fs.unlinkSync(imagePath);
 })
+*/
+
+module.exports.profilePhotoUpload = asyncHandler(async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file provided' });
+    }
+
+    try {
+        // Upload photo directly from multer's temporary file location
+        const result = await cloudinaryUploadImage(req.file.path);
+        console.log(result);
+
+        // Update user's profile photo in the database
+        const user = await User.findById(req.user.id);
+        if (user.ProfilePhoto.publicId !== null) {
+            await cloudinaryRemoveImage(user.ProfilePhoto.publicId);
+        }
+        user.ProfilePhoto = {
+            url: result.secure_url,
+            publicId: result.public_id,
+        };
+        await user.save();
+
+        // Send response with updated profile photo details
+        res.status(200).json({
+            message: "Profile photo uploaded successfully",
+            ProfilePhoto: {
+                url: result.secure_url,
+                publicId: result.public_id,
+            }
+        });
+    } catch (error) {
+        console.error("Error uploading profile photo:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 
 
