@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const path =require('path');
 const fs=require("fs");
-const{cloudinaryUploadImage,cloudinaryRemoveImage}=require("../utils/cloudinary")
+const{cloudinaryUploadImage,cloudinaryRemoveImage,cloudinaryRemoveMultipleImage}=require("../utils/cloudinary")
 const{validateCreateMRIScan,validateUpdateMRIScan,MRIScan} = require("../models/MRimodel");
 
 /** 
@@ -263,10 +263,10 @@ module.exports.updateMRIImage = asyncHandler(async (req, res) => {
 
 
 /** 
-@desc delete all mri
+@desc delete mri image
 @route /api/mriscan/:id
 @method delete
-@access privat e only user 
+@access private only logged in user 
 */
 module.exports.deleteMRI = asyncHandler(async (req,res)=> {
 
@@ -288,3 +288,38 @@ module.exports.deleteMRI = asyncHandler(async (req,res)=> {
     
 }
 );
+
+// Controller function for deleting multiple MRIScans
+/** 
+@desc delete multiple mri images
+@route /api/mriscan/:id
+@method delete
+@access private only logged in user 
+*/
+module.exports.deleteMultipleMRIScans = async (req, res) => {
+    const { ids } = req.body; // Assuming the array of MRI scan IDs is sent in the request body
+    
+    try {
+        // Find and delete each MRIScan
+        for (const id of ids) {
+            const mriscan = await MRIScan.findById(id);
+            if (!mriscan) {
+                // If MRIScan not found, continue to next ID
+                continue;
+            }
+
+            // Check if user has permission to delete MRIScan
+            if (req.user.id === mriscan.Surgeon.toString()) {
+                // Delete MRIScan from database
+                await MRIScan.findByIdAndDelete(id);
+
+                // Remove image from Cloudinary
+                await cloudinaryRemoveImage(mriscan.Image.publicId);
+            }
+        }
+
+        res.status(200).json({ message: 'MRIScans deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
