@@ -6,9 +6,14 @@ const validateObjectId=require("../middlewares/validateObjectId")
 const{getAllMRI,getMRIById,createNewMRI,updateMRI,deleteMRI,updateMRIImage,deleteMultipleMRIScans}=require("../controllers/mriController");
 //http methods 
 
+// Define a route for deleting multiple MRIScans
+router.route('/delete-multiple')
+    .delete(verifyToken, deleteMultipleMRIScans);
+    
 //api/
 router.route('/').post(verifyToken,Photoupload.single( 'image' ), createNewMRI)
                 .get(verifyToken,getAllMRI);
+
 
     //api/mriscan/:id
 router.route("/:id")
@@ -19,9 +24,7 @@ router.route("/:id")
     router.route("/update-image/:id").
     put(validateObjectId,verifyToken, Photoupload.single('newimage'), updateMRIImage);
 
-// Define a route for deleting multiple MRIScans
-router.route('/delete-multiple')
-    .delete(verifyToken, deleteMultipleMRIScans);
+
 
 
 module.exports=router;
