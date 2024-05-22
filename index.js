@@ -1,4 +1,5 @@
 const express= require("express");
+const fs = require('fs');
 const patientspath=require("./routes/patient");
 const authPath =require("./routes/auth");
 const UsersPath =require("./routes/users");
@@ -7,6 +8,7 @@ const passwordpath =require("./routes/password");
 const upload=require("./routes/upload");
 const logger= require("./middlewares/logger");
 const { notFound,errorHandler } = require("./middlewares/error");
+const niftiRoutes = require('./routes/niftiRoutes');
 require("dotenv").config();
 const path= require('path');
 const helmet =require("helmet");
@@ -26,6 +28,14 @@ const app = express();
 //static folder (old one)
 app.use(express.static(path.join(__dirname,"images")));
 
+
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+}
+
+app.use('/api/nifti', niftiRoutes);
 
 
 //apply middleware 
