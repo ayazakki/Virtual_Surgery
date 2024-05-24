@@ -29,7 +29,7 @@ const Photoupload =multer({
 })
 
 
-
 module.exports={
     Photoupload,
+    //NiiUpload
 }

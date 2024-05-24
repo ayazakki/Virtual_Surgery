@@ -1,4 +1,6 @@
 const express= require("express");
+const bodyParser = require('body-parser');
+const multer = require('multer');
 const fs = require('fs');
 const patientspath=require("./routes/patient");
 const authPath =require("./routes/auth");
@@ -8,7 +10,7 @@ const passwordpath =require("./routes/password");
 const upload=require("./routes/upload");
 const logger= require("./middlewares/logger");
 const { notFound,errorHandler } = require("./middlewares/error");
-const niftiRoutes = require('./routes/niftiRoutes');
+const niiRoutes = require('./routes/niiRoutes');
 require("dotenv").config();
 const path= require('path');
 const helmet =require("helmet");
@@ -25,6 +27,13 @@ connectToDB();
 //init app
 const app = express();
 
+//new
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+
+
 //static folder (old one)
 app.use(express.static(path.join(__dirname,"images")));
 
@@ -35,7 +44,7 @@ if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir);
 }
 
-app.use('/api/nifti', niftiRoutes);
+app.use('/api/nii', niiRoutes);
 
 
 //apply middleware 
