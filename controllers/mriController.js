@@ -394,7 +394,7 @@ module.exports.deleteMRI = asyncHandler(async (req,res)=> {
         if(req.user.id === mriscan.Surgeon.toString()){
             await MRIScan.findByIdAndDelete(req.params.id);
             await cloudinaryRemoveImage(mriscan.Image.publicId);
-            res.status(200).json({message : 'is delete',
+            res.status(200).json({message : 'is deleted successfully',
                     mriscanId: mriscan._id});
         }
         else{
