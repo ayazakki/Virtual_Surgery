@@ -256,7 +256,8 @@ module.exports.updateMRIImage=asyncHandler(async(req,res)=> {
 }
 );
 */
-module.exports.updateMRIImage = asyncHandler(async (req, res) => {
+/*
+module.exports.updateMRIfile = asyncHandler(async (req, res) => {
     // Validation
     if (!req.file) {
         return res.status(400).json({ message: "No image provided" });
@@ -300,7 +301,81 @@ module.exports.updateMRIImage = asyncHandler(async (req, res) => {
         res.status(500).json({ message: "Failed to update MRI image" });
     }
 });
+*/
+module.exports.updateMRIfile = asyncHandler(async (req, res) => {
+    // Validation
+    if (!req.file) {
+        return res.status(400).json({ message: "No image provided" });
+    }
 
+    try {
+        // Get MRI by id from the database
+        const scan = await MRIScan.findById(req.params.id);
+        if (!scan) {
+            return res.status(404).json({ message: 'MRI not found' });
+        }
+
+        // Check if the requesting user is the owner of the MRI
+        if (req.user.id !== scan.Surgeon.toString()) {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        // Remove old MRI image from Cloudinary
+        await cloudinaryRemoveImage(scan.Image.publicId);
+
+        // Compress the file buffer
+        zlib.gzip(req.file.buffer, async (err, compressedBuffer) => {
+            if (err) {
+                return res.status(500).send('Error compressing file');
+            }
+
+            console.log("uploading:")
+            try {
+                // Upload compressed file to Cloudinary
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    { resource_type: 'raw' },
+                    async (error, result) => {
+                        if (error) {
+                            return res.status(500).send('Cloudinary upload failed');
+                        }
+
+                        // Ensure the Cloudinary response contains publicId and secure_url
+                        if (!result || !result.public_id || !result.secure_url) {
+                            return res.status(500).send('Cloudinary upload failed');
+                        }
+
+                       // Update image in the database
+                        const updatedMRI = await MRIScan.findByIdAndUpdate(req.params.id, {
+                            $set: {
+                                Image: {
+                                url: result.secure_url,
+                                publicId: result.public_id,
+                                }
+                            }
+                         }, { new: true }).populate('Patient');
+
+                        // Respond with the updated MRI object
+                        res.status(200).json(updatedMRI);
+
+                        // Remove the uploaded image file from the server
+                        //fs.unlinkSync(req.file.path);
+                        }
+                        );
+
+                const bufferStream = new stream.PassThrough();
+                bufferStream.end(compressedBuffer);
+                bufferStream.pipe(uploadStream);
+                console.log("finished")
+            } catch (error) {
+                console.error('Error uploading file to Cloudinary:', error);
+                res.status(500).send('Error uploading file to Cloudinary');
+            }
+        });
+    } catch (error) {
+        console.error("Error updating MRI image:", error);
+        res.status(500).json({ message: "Failed to update MRI image" });
+    }
+});
 
 /** 
 @desc delete mri image
