@@ -3,6 +3,7 @@ const path =require('path');
 const fs=require("fs");
 const zlib = require('zlib');
 const stream = require('stream');
+const axios = require('axios');
 const cloudinary = require('cloudinary').v2;
 const{cloudinaryUploadImage,cloudinaryRemoveImage,cloudinaryRemoveMultipleImage}=require("../utils/cloudinary")
 const{validateCreateMRIScan,validateUpdateMRIScan,MRIScan} = require("../models/MRimodel");
@@ -20,7 +21,7 @@ cloudinary.config({
 @access (only logged in surgeon)
 
 */ 
-
+/*
 module.exports.getAllMRI = asyncHandler(async (req, res) => {
     const SCAN_PER_PAGE = 3;
     const { pageNumber } = req.query;
@@ -44,7 +45,92 @@ module.exports.getAllMRI = asyncHandler(async (req, res) => {
 
     res.status(200).json(scans);
 });
+*/
 
+module.exports.getAllMRI = asyncHandler(async (req, res) => {
+    const SCAN_PER_PAGE = 3;
+    const { pageNumber } = req.query;
+    const surgeonId = req.user.id;
+
+    let scans;
+
+    try {
+        if (pageNumber) {
+            scans = await MRIScan.find({ Surgeon: surgeonId })
+                .sort()
+                .skip((pageNumber - 1) * SCAN_PER_PAGE)
+                .limit(SCAN_PER_PAGE)
+                .populate("Patient", ["_id", "First_Name", "Last_Name"]);
+        } else {
+            scans = await MRIScan.find({ Surgeon: surgeonId })
+                .sort({ createdAt: -1 })
+                .populate("Patient", ["_id", "First_Name", "Last_Name"]);
+        }
+
+        console.log('Retrieved scans:', scans);
+
+        const decompressedScans = await Promise.all(scans.map(async (scan) => {
+            const { url, publicId } = scan.Image;
+
+            if (!url) {
+                console.error('No URL found for the image:', scan);
+                throw new Error('No URL found for the image');
+            }
+
+            console.log('Fetching file from URL:', url);
+
+            try {
+                const compressedBuffer = await fetchCompressedFileFromCloudinary(url);
+                console.log('Compressed file fetched:', compressedBuffer);
+
+                const decompressedBuffer = await decompressFile(compressedBuffer);
+                console.log('File decompressed:', decompressedBuffer);
+
+                scan.Image.decompressedFile = decompressedBuffer.toString('utf-8'); // or appropriate format
+                return scan;
+
+            } catch (error) {
+                console.error(`Error processing scan with publicId ${publicId}:`, error.message);
+                throw error;
+            }
+        }));
+
+        res.status(200).json({ success: true, message: "MRI scans retrieved successfully"});
+        //res.status(200).json(decompressedScans);
+
+    } catch (error) {
+        console.error('Error processing scans:', error.message);
+        res.status(500).send(error.message);
+    }
+});
+
+async function fetchCompressedFileFromCloudinary(url) {
+    try {
+        const response = await axios.get(url, { responseType: 'arraybuffer' });
+        console.log('File fetched from Cloudinary:', response);
+        return response.data;
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            console.error('File not found on Cloudinary:', url);
+            throw new Error('File not found on Cloudinary');
+        } else {
+            console.error('Error fetching file from Cloudinary:', error);
+            throw new Error('Error fetching file from Cloudinary');
+        }
+    }
+}
+
+async function decompressFile(compressedBuffer) {
+    return new Promise((resolve, reject) => {
+        zlib.gunzip(compressedBuffer, (err, decompressedBuffer) => {
+            if (err) {
+                console.error('Error decompressing file:', err);
+                return reject(err);
+            }
+            resolve(decompressedBuffer);
+        });
+    });
+}
 
 /** 
 @desc Get MRIScan by id

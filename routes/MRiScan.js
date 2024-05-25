@@ -12,12 +12,13 @@ router.route('/delete-multiple')
     .delete(verifyToken, deleteMultipleMRIScans);
     
 //api/
-/*
-router.route('/').post(verifyToken,Photoupload.single( 'image' ), createNewMRI)
-                .get(verifyToken,getAllMRI);
-*/
-router.route('/').post(verifyToken,NiiUpload.single('file'), createNewMRI)
 
+router.route('/').post(verifyToken,NiiUpload.single('file'), createNewMRI)
+                .get(verifyToken,getAllMRI);
+
+/*                
+router.route('/').post(verifyToken,NiiUpload.single('file'), createNewMRI)
+*/
     //api/mriscan/:id
 router.route("/:id")
     .get(validateObjectId,verifyToken,getMRIById)
