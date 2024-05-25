@@ -203,7 +203,7 @@ module.exports.updateMRI=asyncHandler(async(req,res)=> {
     const updateMRI=await MRIScan.findByIdAndUpdate(req.params.id,
         {
         $set: {
-            ScanDetalies : req.body.ScanDetalies,
+            ScanDetails : req.body.ScanDetails,
         }
     },{ new : true} ).populate('Patient');
 

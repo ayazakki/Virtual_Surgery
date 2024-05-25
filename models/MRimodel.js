@@ -54,7 +54,7 @@ function validateCreateMRIScan(obj){
 function validateUpdateMRIScan(obj){
     const schema=joi.object
     ({  
-        ScanDetalies:joi.string().min(3).max(1000),
+        ScanDetails:joi.string().min(3).max(1000),
 
     
     });
