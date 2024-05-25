@@ -1,10 +1,10 @@
 const fs = require('fs');
 const nifti = require('nifti-reader-js');
 
-const calculateVolume = async (niiFilePath, threshold = 0.2, sliceThickness = 2.5, imageResolution = 0.001) => {
+const calculateVolume = async (niiBuffer/*niiFilePath*/, threshold = 0.2, sliceThickness = 2.5, imageResolution = 0.001) => {
     try {
         // Read the NIfTI file into a buffer
-        const niiBuffer = fs.readFileSync(niiFilePath);
+        //const niiBuffer = fs.readFileSync(niiFilePath);
 
         // Ensure the buffer is an ArrayBuffer
         const arrayBuffer = niiBuffer.buffer.slice(niiBuffer.byteOffset, niiBuffer.byteOffset + niiBuffer.byteLength);

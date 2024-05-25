@@ -4,6 +4,7 @@ const cloudinary = require('cloudinary');
 const streamifier = require('streamifier');
 const { Readable } = require('stream');
 const zlib = require('zlib');
+const stream = require('stream');
 
 cloudinary.config({ 
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
@@ -82,40 +83,35 @@ const cloudinaryUploadniiImage = async (fileBuffer) => {
 };
 */
 
-const cloudinaryUploadniiImage = async (fileBuffer, fileName) => {
+// Function to upload a compressed buffer to Cloudinary
+const uploadCompressedBuffer = (compressedBuffer) => {
     return new Promise((resolve, reject) => {
-        // Compress the file buffer
-        zlib.gzip(fileBuffer, (error, compressedBuffer) => {
-            if (error) {
-                return reject(new Error('File compression failed'));
-            }
+        // Create a readable stream from the compressed buffer
+        const bufferStream = new stream.PassThrough();
+        bufferStream.end(compressedBuffer);
 
-            const uploadStream = cloudinary.uploader.upload_stream(
-                {
-                    resource_type: 'raw',
-                    public_id: fileName,
-                },
-                (error, result) => {
-                    if (result) {
-                        resolve(result);
-                    } else {
-                        reject(error);
-                    }
+        // Upload the stream to Cloudinary
+        const uploadStream = cloudinary.uploader.upload_stream(
+            { resource_type: 'raw' },
+            (error, result) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(result);
                 }
-            );
+            }
+        );
 
-            const bufferStream = new Readable();
-            bufferStream.push(compressedBuffer);
-            bufferStream.push(null);
-            bufferStream.pipe(uploadStream);
-        });
+        // Pipe the buffer stream to the Cloudinary upload stream
+        bufferStream.pipe(uploadStream);
     });
 };
+
 
 
 module.exports={
     cloudinaryUploadImage,
     cloudinaryRemoveImage,
     cloudinaryRemoveMultipleImage,
-    cloudinaryUploadniiImage
+    uploadCompressedBuffer,
 }
