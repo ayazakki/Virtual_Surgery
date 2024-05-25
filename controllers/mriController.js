@@ -95,7 +95,7 @@ module.exports.getAllMRI = asyncHandler(async (req, res) => {
             }
         }));
 
-        res.status(200).json({ success: true, message: "MRI scans retrieved successfully"});
+        res.status(200).json({ success: true, message: "MRI scans retrieved successfully", scans: decompressedScans});
         //res.status(200).json(decompressedScans);
 
     } catch (error) {
