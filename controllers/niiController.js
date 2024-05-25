@@ -170,6 +170,7 @@ module.exports.createNewNiiFile = async (req, res) => {
                 return res.status(500).send('Error compressing file');
             }
 
+            console.log("uploading:")
             try {
                 // Upload compressed file to Cloudinary
                 const uploadStream = cloudinary.uploader.upload_stream(
@@ -234,6 +235,7 @@ module.exports.createNewNiiFile = async (req, res) => {
                 const bufferStream = new stream.PassThrough();
                 bufferStream.end(compressedBuffer);
                 bufferStream.pipe(uploadStream);
+                console.log("finished")
             } catch (error) {
                 console.error('Error uploading file to Cloudinary:', error);
                 res.status(500).send('Error uploading file to Cloudinary');
