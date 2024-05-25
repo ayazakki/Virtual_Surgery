@@ -1,9 +1,18 @@
 const asyncHandler = require("express-async-handler");
 const path =require('path');
 const fs=require("fs");
+const zlib = require('zlib');
+const stream = require('stream');
+const cloudinary = require('cloudinary').v2;
 const{cloudinaryUploadImage,cloudinaryRemoveImage,cloudinaryRemoveMultipleImage}=require("../utils/cloudinary")
 const{validateCreateMRIScan,validateUpdateMRIScan,MRIScan} = require("../models/MRimodel");
 
+// Configure Cloudinary with your cloud name, API key, and API secret
+cloudinary.config({ 
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 /** 
 @desc Get all MRISCAN
 @route /api/mriscan
@@ -66,6 +75,7 @@ module.exports. getMRIById =asyncHandler(async(req,res)=>{
 @method post
 @access private(only log in user)
 */
+/*
 module.exports.createNewMRI = async (req, res) => {
     try {
         // 1. Validation for image
@@ -103,42 +113,72 @@ module.exports.createNewMRI = async (req, res) => {
         res.status(500).send('Internal server error');
     }
 };
-/* 
-module.exports.createNewMRI = asyncHandler( async (req,res)=>{
-    //1.validation for image 
-    if(!req.file) {
-    return res.status(400).send('No image  uploaded');
-    }
-    //2.validation for data 
-    const {error}=validateCreateMRIScan(req.body);
-    if (error) {
-    res.status(400).send(error.details[0].message);
-    }
-    //3.upload photo
-    const imagePath=path.join(__dirname,`../images/${req.file.filename}`);
-    const result = await cloudinaryUploadImage(imagePath);
-
-
-    //4.create new MRISCAN
-    const scan = await MRIScan.create(
-        {   Surgeon:req.user.id,
-            Patient:req.body.Patient,
-            ScanDetalies:req.body.ScanDetalies,
-            Image:{
-                url:result.secure_url,
-                publicId:result.public_id,
-            }
-        
-        })
-    //5.send response to the client 
-        res.status(201).json(scan);      
-    //6. remove image from the server
-        fs.unlinkSync(imagePath);
-
-
-}
-);
 */
+module.exports.createNewMRI = async (req, res) => {
+    try {
+        // 1. Validation for image
+        if (!req.file) {
+            return res.status(400).send('No image uploaded');
+        }
+
+        // 2. Validation for data
+        const { error } = validateCreateMRIScan(req.body);
+        if (error) {
+            return res.status(400).send(error.details[0].message);
+        }
+
+          // Compress the file buffer
+          zlib.gzip(req.file.buffer, async (err, compressedBuffer) => {
+            if (err) {
+                return res.status(500).send('Error compressing file');
+            }
+
+            console.log("uploading:")
+            try {
+                // Upload compressed file to Cloudinary
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    { resource_type: 'raw' },
+                    async (error, result) => {
+                        if (error) {
+                            return res.status(500).send('Cloudinary upload failed');
+                        }
+
+                        // Ensure the Cloudinary response contains publicId and secure_url
+                        if (!result || !result.public_id || !result.secure_url) {
+                            return res.status(500).send('Cloudinary upload failed');
+                        }
+                        // Proceed with the rest of your logic, such as saving the Cloudinary URL and public ID to your database
+                        const scan = await MRIScan.create({
+                            Surgeon: req.user.id,
+                            Patient: req.body.Patient,
+                            ScanDetails: req.body.ScanDetails,
+                            // Save Cloudinary URL and public ID
+                            Image: {
+                                url: result.secure_url,
+                                publicId: result.public_id,
+                            }
+                        });
+
+                        // 5. Send response to the client
+                         res.status(201).json(scan);
+                    }
+                );
+
+                const bufferStream = new stream.PassThrough();
+                bufferStream.end(compressedBuffer);
+                bufferStream.pipe(uploadStream);
+                console.log("finished")
+            } catch (error) {
+                console.error('Error uploading file to Cloudinary:', error);
+                res.status(500).send('Error uploading file to Cloudinary');
+            }
+        });
+    } catch (error) {
+        console.error('Error creating MRI scan:', error);
+        res.status(500).send('Internal server error');
+    }
+};
+
 /** 
 @desc update MRISCAN details
 @route /api/mriscan/:id

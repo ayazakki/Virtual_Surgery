@@ -17,7 +17,7 @@ const MRIScanSchema = new mongoose.Schema({
         required: true
     },
 
-    ScanDetalies:
+    ScanDetails:
     {
         type:String,
         required:true,
@@ -46,7 +46,7 @@ function validateCreateMRIScan(obj){
     const schema=joi.object
     ({
         Patient:joi.string().required(),
-        ScanDetalies:joi.string().min(3).max(1000).required(),
+        ScanDetails:joi.string().min(3).max(1000).required(),
         
     });
     return schema.validate(obj);
