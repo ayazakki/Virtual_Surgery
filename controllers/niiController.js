@@ -163,7 +163,7 @@ module.exports.createNewNiiFile = async (req, res) => {
         if (error) {
             return res.status(400).send(error.details[0].message);
         }
-
+        const generatedFileName = 'brain';
         // Compress the file buffer
         zlib.gzip(req.file.buffer, async (err, compressedBuffer) => {
             if (err) {
@@ -174,7 +174,10 @@ module.exports.createNewNiiFile = async (req, res) => {
             try {
                 // Upload compressed file to Cloudinary
                 const uploadStream = cloudinary.uploader.upload_stream(
-                    { resource_type: 'raw' },
+                    {
+                        resource_type: 'raw' ,
+                        format:"nii.gz",
+                    },
                     async (error, result) => {
                         if (error) {
                             return res.status(500).send('Cloudinary upload failed');

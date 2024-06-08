@@ -140,7 +140,7 @@ async function decompressFile(compressedBuffer) {
 @access (only logged in surgeon)
 
 */
-
+/*
 module.exports. getMRIById =asyncHandler(async(req,res)=>{
     const scans = await MRIScan.findById(req.params.id).populate("Patient");
     if(!scans){
@@ -151,6 +151,42 @@ module.exports. getMRIById =asyncHandler(async(req,res)=>{
     }
     res.status(200).json(scans);
 
+});
+*/
+module.exports.getMRIById = asyncHandler(async (req, res) => {
+    const scan = await MRIScan.findById(req.params.id).populate("Patient");
+    
+    if (!scan) {
+        return res.status(404).json({ message: 'The MRIScan with the given ID was not found.' });
+    }
+    
+    if (req.user.id !== scan.Surgeon.toString()) {
+        return res.status(403).json({ message: 'Access denied' });
+    }
+
+    try {
+        const { url, publicId } = scan.Image;
+
+        if (!url) {
+            console.error('No URL found for the image:', scan);
+            throw new Error('No URL found for the image');
+        }
+
+        console.log('Fetching file from URL:', url);
+
+        const compressedBuffer = await fetchCompressedFileFromCloudinary(url);
+        console.log('Compressed file fetched:', compressedBuffer);
+
+        const decompressedBuffer = await decompressFile(compressedBuffer);
+        console.log('File decompressed:', decompressedBuffer);
+
+        scan.Image.decompressedFile = decompressedBuffer.toString('utf-8'); // or appropriate format
+
+        res.status(200).json({ success: true, message: 'MRI scan retrieved and decompressed successfully', scan });
+    } catch (error) {
+        console.error(`Error processing scan with publicId ${publicId}:`, error.message);
+        res.status(500).json({ success: false, message: 'Error processing MRI scan', error: error.message });
+    }
 });
 
 

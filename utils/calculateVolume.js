@@ -7,8 +7,10 @@ const calculateVolume = async (niiBuffer/*niiFilePath*/, threshold = 0.2, sliceT
         //const niiBuffer = fs.readFileSync(niiFilePath);
 
         // Ensure the buffer is an ArrayBuffer
-        const arrayBuffer = niiBuffer.buffer.slice(niiBuffer.byteOffset, niiBuffer.byteOffset + niiBuffer.byteLength);
-
+        let arrayBuffer = niiBuffer.buffer.slice(niiBuffer.byteOffset, niiBuffer.byteOffset + niiBuffer.byteLength);
+        if (nifti.isCompressed(arrayBuffer)) {
+            arrayBuffer = nifti.decompress(arrayBuffer);
+          }
         // Ensure the file is a valid NIfTI file
         if (!nifti.isNIFTI(arrayBuffer)) {
             throw new Error('The file is not a valid NIfTI file');

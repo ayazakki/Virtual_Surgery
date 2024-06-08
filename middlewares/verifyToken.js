@@ -8,11 +8,11 @@ function verifyToken(req,res,next){
             req.user = decoded;
             next();
         } catch (error) {
-            res.status(401).json({message:"invalid token"})
+            return res.status(401).json({message:"invalid token"})
         }
 
     }else{
-        res.status(401).json({message:"no  token provided"})
+       return res.status(401).json({message:"no  token provided"})
     }
 
 };

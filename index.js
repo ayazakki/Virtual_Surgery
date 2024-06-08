@@ -2,6 +2,7 @@ const express= require("express");
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const fs = require('fs');
+const fileRoutes = require('./routes/fileRoutes');
 const patientspath=require("./routes/patient");
 const authPath =require("./routes/auth");
 const UsersPath =require("./routes/users");
@@ -18,6 +19,8 @@ const cors = require("cors");
 const connectToDB =require("./config/db");
 const compression =require("compression");
 const cloudinary = require("./utils/cloudinary");
+//const segmentationRoutes = require('./routes/BTSegmentationResultRoutes');
+const volumeRoute = require('./routes/BTVolumeResultRoute');
 //const swaggerjsdoc = require("swagger-jsdoc");
 //const swaggerui = require("swagger-ui-express");
 
@@ -69,6 +72,11 @@ app.use("/api/auth",authPath);
 app.use("/api/users",UsersPath);
 app.use("/api/mriscan",mriscanpath);
 app.use("/api/password",passwordpath);
+app.use('/api/files', fileRoutes);
+app.use('/api/volume', volumeRoute);
+// new 
+//app.use('/api/segmentation-results', segmentationRoutes);
+
 //app.use('/api/upload',upload);
 
 /*const options ={
@@ -102,7 +110,7 @@ app.use(errorHandler);
 
 
 //running server
-const PORT = process.env.PORT||8000;
+const PORT = process.env.PORT||5050;
 app.listen(PORT,() => console.log(`server is running in ${process.env.NODE_ENV} on port ${PORT}`));
 
 
