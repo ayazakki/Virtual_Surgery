@@ -2,7 +2,7 @@ const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const zlib = require('zlib');
 const axios = require('axios');
-const stream = require('stream'); // Import the stream module
+const stream = require('stream'); 
 
 cloudinary.config({ 
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
@@ -10,7 +10,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const compressAndUploadToCloudinary = (fileBuffer) => {
+const compressAndUploadToCloudinary = (fileBuffer,mimetype) => {
   return new Promise((resolve, reject) => {
       const gzip = zlib.createGzip();
       const uploadStream = cloudinary.uploader.upload_stream(
@@ -34,13 +34,14 @@ const compressAndUploadToCloudinary = (fileBuffer) => {
 
       const bufferStream = new stream.PassThrough();
       bufferStream.end(fileBuffer);
-      bufferStream.pipe(gzip).pipe(uploadStream);
+      if(mimetype === 'application/gzip' )  bufferStream.pipe(uploadStream);
+      else bufferStream.pipe(gzip).pipe(uploadStream);
   });
 };
 
 const sendFilesToFlaskAPI = async (fileUrls) => {
   try {
-      const response = await axios.post('http://127.0.0.1:5000/uncompress-and-predict', {
+      const response = await axios.post('https://flaskproject-9auf.onrender.com', {
           file_urls: fileUrls// Convert file URLs to an array of strings
       });
       console.log('Predictions from Flask API:', response.data);
