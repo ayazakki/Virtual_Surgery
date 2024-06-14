@@ -41,7 +41,7 @@ const compressAndUploadToCloudinary = (fileBuffer,mimetype) => {
 
 const sendFilesToFlaskAPI = async (fileUrls) => {
   try {
-      const response = await axios.post('https://flaskproject-9auf.onrender.com', {
+      const response = await axios.post('https://flaskproject-9auf.onrender.com/uncompress-and-predict', {
           file_urls: fileUrls// Convert file URLs to an array of strings
       });
       console.log('Predictions from Flask API:', response.data);
