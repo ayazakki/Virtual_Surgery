@@ -75,7 +75,18 @@ router.get("/patient/:id",verifyToken, async (req, res) => {
         console.log(`Patients: ${surgeon.Patients}`);
         const patientIds = surgeon.Patients.map(patient => patient._id);
         */
-        const results = await BTSegmentationResult.find({ patientId: req.params.id });
+        const results = await BTSegmentationResult.find({ patientId: req.params.id }).select("_id results name");
+        const filteredResult = results.map(result => ({_id: result._id,name:result.name, thumbnail: result.results[0]}));
+        res.json(filteredResult);
+    } catch (error) {
+        console.error('Error fetching segmentation results:', error);
+        res.status(500).json({ message: 'Failed to fetch segmentation results', error: error.message });
+    }
+});
+
+router.get("/:id",verifyToken, async (req, res) => {
+    try {
+        const results = await BTSegmentationResult.findById(req.params.id);
         res.json(results);
     } catch (error) {
         console.error('Error fetching segmentation results:', error);
