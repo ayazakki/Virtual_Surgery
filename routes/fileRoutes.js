@@ -29,8 +29,7 @@ router.post("/",verifyToken, NiiUpload.array('file'), async (req, res) => {
     try {
         // Upload each file to Cloudinary
         for (const file of files) {
-            
-            const uploadedFile = await compressAndUploadToCloudinary(file.buffer,file.mimetype);
+            const uploadedFile = await compressAndUploadToCloudinary(file.buffer,file.originalname,file.mimetype);
             fileUrls.push({ public_id: uploadedFile.public_id, secure_url: uploadedFile.secure_url });
         }
         
