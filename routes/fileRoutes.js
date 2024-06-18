@@ -63,16 +63,19 @@ router.post("/",verifyToken, NiiUpload.array('file'), async (req, res) => {
 
 // GET route to retrieve all segmentation results
 
-router.get("/",verifyToken, async (req, res) => {
+router.get("/patient/:id",verifyToken, async (req, res) => {
     try {
+        /** 
         const surgeon = await User.findById(req.user.id).populate('Patients');
+
         console.log(`Surgeon found: ${surgeon}`);
         if (!surgeon) {
             return res.status(404).json({ message: 'Surgeon not found' });
         }
         console.log(`Patients: ${surgeon.Patients}`);
         const patientIds = surgeon.Patients.map(patient => patient._id);
-        const results = await BTSegmentationResult.find({ patientId: { $in: patientIds } });
+        */
+        const results = await BTSegmentationResult.find({ patientId: req.params.id });
         res.json(results);
     } catch (error) {
         console.error('Error fetching segmentation results:', error);
