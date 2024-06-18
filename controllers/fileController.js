@@ -10,7 +10,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const compressAndUploadToCloudinary = (fileBuffer,mimetype) => {
+const compressAndUploadToCloudinary = (fileBuffer,filename,mimetype) => {
   return new Promise((resolve, reject) => {
       const gzip = zlib.createGzip();
       const uploadStream = cloudinary.uploader.upload_stream(
@@ -34,7 +34,10 @@ const compressAndUploadToCloudinary = (fileBuffer,mimetype) => {
 
       const bufferStream = new stream.PassThrough();
       bufferStream.end(fileBuffer);
-      if(mimetype === 'application/gzip' ) 
+      console.log('compression type : ',mimetype);
+      const filenameArr = filename.split(".");
+      const extension = filenameArr[filenameArr.length - 1]
+      if(extension === 'gz' ) 
         {
             console.log('already compressed');
             bufferStream.pipe(uploadStream);
