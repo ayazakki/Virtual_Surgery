@@ -34,8 +34,19 @@ const compressAndUploadToCloudinary = (fileBuffer,mimetype) => {
 
       const bufferStream = new stream.PassThrough();
       bufferStream.end(fileBuffer);
-      if(mimetype === 'application/gzip' )  bufferStream.pipe(uploadStream);
-      else bufferStream.pipe(gzip).pipe(uploadStream);
+      if(mimetype === 'application/gzip' ) 
+        {
+            console.log('already compressed');
+            bufferStream.pipe(uploadStream);
+            
+        }
+        
+      else
+      {
+        console.log('compressed');
+        bufferStream.pipe(gzip).pipe(uploadStream);
+      }
+      
   });
 };
 
