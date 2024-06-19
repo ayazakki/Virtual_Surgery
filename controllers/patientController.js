@@ -4,6 +4,7 @@ const asyncHandler = require("express-async-handler");
 const { Patient ,validateCreatePatient,validateUpdatePatient} = require("../models/Patient");
 const {User}=require("../models/usermodel");
 const  {verifyToken,verifyTokenAndAuthorization} = require("../middlewares/verifyToken");
+const mongoose = require ("mongoose");
 
 
 /**
@@ -19,7 +20,8 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
         const user = req.user;
     
         // Retrieve patients related to the user (assuming the user has a field like surgeonId)
-        const patientList = await Patient.find({ Surgeon: user.id })
+        const patientList = await Patient.findActive()
+        .where({ Surgeon: user.id })
         .populate("Surgeon",["FirstName","LastName"])
         .sort({createdAt:-1});
         res.status(200).json(patientList);
@@ -165,7 +167,7 @@ module.exports.updatePatient=asyncHandler(async(req,res)=> {
 @access private (only logged in user)
 
 */
-
+/** 
 module.exports.deletePatient=asyncHandler(async (req,res)=> {
 
     const patient = await Patient.findById(req.params.id);
@@ -186,6 +188,36 @@ module.exports.deletePatient=asyncHandler(async (req,res)=> {
         }
     }
 );
+*/
+
+module.exports.deletePatient = async (req, res) => {
+    const patientId = req.params.id;
+
+    // Step 1: Validate the request ID
+    if (!mongoose.Types.ObjectId.isValid(patientId)) {
+        return res.status(400).json({ message: 'Invalid ID format.' });
+    }
+
+    try {
+        // Step 2: Find the patient by ID
+        const patient = await Patient.findById(patientId);
+        if (!patient) {
+            return res.status(404).json({ message: 'Patient not found.' });
+        }
+
+        // Step 3: Mark the patient as deleted and set the deletedAt timestamp
+        patient.deleted = true;
+        patient.deletedAt = new Date();
+        await patient.save();
+
+        // Respond with a success message
+        res.json({ message: 'Patient marked as deleted successfully.' });
+
+    } catch (error) {
+        console.error('Error during soft deletion:', error);
+        res.status(500).json({ message: 'Soft deletion failed', error: error.message });
+    }
+};
 
 /**
 @desc Count patients

@@ -98,12 +98,24 @@ const PatientSchema=new mongoose.Schema({
         type:String,
         trim:true,
         maxlength:1000,
+    },
+    deleted: {
+        type: Boolean,
+        default: false,
+    },
+    deletedAt: {
+        type: Date,
+        default: null,
     }
 },{
     timestamps:true
 });
 
 //new
+// Static method to find all non-deleted patients
+PatientSchema.statics.findActive = function () {
+    return this.find({ deleted: false });
+};
 
 function validateCreatePatient(obj){
     const schema = joi.object
