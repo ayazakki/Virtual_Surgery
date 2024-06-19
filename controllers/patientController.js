@@ -209,7 +209,6 @@ module.exports.deletePatient = async (req, res) => {
         }
 
         // Step 3: Mark the patient as deleted and set the deletedAt timestamp
-        patient.isDeleted = true;
         patient.deletedAt = new Date();
         await patient.save();
 

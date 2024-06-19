@@ -581,11 +581,10 @@ module.exports.deleteFiles =async (req, res) => {
         }
 
         // Step 3: Mark the document as deleted and set the deletedAt timestamp
-        result.isDeleted = true;
         result.deletedAt = new Date();
         await result.save();
         // Respond with a success message
-        res.status(200).json({ message: 'Segmentation result marked as deleted successfully.' });
+        return res.status(200).json({ message: 'Segmentation result marked as deleted successfully.' });
 
     } catch (error) {
         console.error('Error during soft deletion:', error);

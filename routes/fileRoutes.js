@@ -74,7 +74,7 @@ router.get("/patient/:id",verifyToken, async (req, res) => {
         console.log(`Patients: ${surgeon.Patients}`);
         const patientIds = surgeon.Patients.map(patient => patient._id);
         */
-        const results = await BTSegmentationResult.find({ patientId: req.params.id ,isDeleted : false }).select("_id results name");
+        const results = await BTSegmentationResult.find({ patientId: req.params.id ,deletedAt : null }).select("_id results name");
         const filteredResult = results.map(result => ({_id: result._id,name:result.name, thumbnail: result.results[0]}));
         res.json(filteredResult);
     } catch (error) {
@@ -83,11 +83,15 @@ router.get("/patient/:id",verifyToken, async (req, res) => {
     }
 });
 
-router.get("/:id",verifyToken, async (req, res) => {
+router.get("/file/:id",verifyToken, async (req, res) => {
     try {
         //findById(req.params.id)
-        const results = await BTSegmentationResult.findOne({ _id: req.params.id, isDeleted: false });
-        res.json(results);
+        const results = await BTSegmentationResult.findOne({ _id: req.params.id, deletedAt : null });
+        if(!results)
+            {
+                return res.status(400).json("this MRI id not found");
+            }
+         return res.json(results);
     } catch (error) {
         console.error('Error fetching segmentation results:', error);
         res.status(500).json({ message: 'Failed to fetch segmentation results', error: error.message });
