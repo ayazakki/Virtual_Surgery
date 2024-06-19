@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { BTVolumeResult } = require('../models/BTVolumeResult');
+const  {BTVolumeResult}  = require('../models/BTVolumeResult');
 const BTSegmentationResult = require('../models/BTSegmentationResult');
 const calculateVolume = require('../utils/calculateVolume');
 const axios =require('axios');
@@ -57,9 +57,9 @@ router.post("/save-volume", async (req, res) => {
     }
 })
 
-router.get('/', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const allVolumeResults = await BTVolumeResult.find({btSegmentationId:req.body.btSegmentationId});
+        const allVolumeResults = await BTVolumeResult.find({btSegmentationId:req.params.id});
         res.json(allVolumeResults);
     } catch (error) {
         console.error('Error fetching volume results:', error);

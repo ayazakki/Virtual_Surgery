@@ -17,7 +17,7 @@ const VolumeResultSchema = new Schema({
     },
     btSegmentationId: {
       type: Schema.Types.ObjectId,
-      ref: 'SegmentationResult', 
+      ref: 'BTSegmentationResult', 
       required: true
     },
   },{ timestamps: true });
