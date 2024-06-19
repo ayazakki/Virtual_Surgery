@@ -204,6 +204,9 @@ module.exports.deletePatient = async (req, res) => {
         if (!patient) {
             return res.status(404).json({ message: 'Patient not found.' });
         }
+        if (req.user.id !== patient.Surgeon.toString()) {
+            return res.status(403).json({ message: "Access denied. You are not authorized to access this patient record." });
+        }
 
         // Step 3: Mark the patient as deleted and set the deletedAt timestamp
         patient.deleted = true;
