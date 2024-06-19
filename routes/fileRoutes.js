@@ -74,7 +74,7 @@ router.get("/patient/:id",verifyToken, async (req, res) => {
         console.log(`Patients: ${surgeon.Patients}`);
         const patientIds = surgeon.Patients.map(patient => patient._id);
         */
-        const results = await BTSegmentationResult.find({ patientId: req.params.id ,isDeleted : false }).select("_id results name");
+        const results = await BTSegmentationResult.find({ patientId: req.params.id ,isDeleted : false }).select("_id results name isDeleted");
         const filteredResult = results.map(result => ({_id: result._id,name:result.name, thumbnail: result.results[0]}));
         res.json(filteredResult);
     } catch (error) {
