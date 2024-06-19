@@ -7,9 +7,9 @@ const axios =require('axios');
 const zlib = require('zlib');
 const  {verifyToken} = require("../middlewares/verifyToken");
 
-router.post('/', verifyToken ,async (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
     try {
-        const segmentationResult = await BTSegmentationResult.findOne({_id:req.body.id}) 
+        const segmentationResult = await BTSegmentationResult.findOne({ _id: req.body.id })
         if (!segmentationResult) {
             return res.status(404).json({ message: 'Segmentation result not found' });
         }
@@ -17,26 +17,45 @@ router.post('/', verifyToken ,async (req, res) => {
         const { displayedNII } = segmentationResult;
         const bufferResponse = await axios.get(displayedNII.secure_url, {
             responseType: "arraybuffer",
-          });
+        });
         //const buffer = bufferResponse.data;
         //new
         const buffer = bufferResponse.data
-        const volume = await calculateVolume(buffer,req.body.threshold);
-
-        const volumeResult = new BTVolumeResult({
-            threshold: req.body.threshold,
+        const volume = await calculateVolume(buffer, req.body.threshold);
+        const result = {
             volume,
-            niiFile: displayedNII,
-            btSegmentationId: segmentationResult._id
-        });
+            threshold: req.body.threshold,
+            displayedNII,
+            btSegmentationId:req.body.id
 
-        const savedVolumeResult = await volumeResult.save();
-        res.json(savedVolumeResult);
+        }
+
+        res.json(result);
     } catch (error) {
         console.error('Error calculating volume:', error);
         res.status(500).json({ message: 'Failed to calculate volume', error: error.message });
     }
 });
+router.post("/save-volume", async (req, res) => {
+    try {
+        const { threshold, volume, displayedNII, btSegmentationId } = req.body
+        const btVolumeResult = await BTVolumeResult.findOne({ btSegmentationId, threshold })
+        if (btVolumeResult) {
+            return res.json(btVolumeResult)
+        }
+        const volumeResult = new BTVolumeResult({
+            threshold,
+            volume,
+            niiFile: displayedNII,
+            btSegmentationId
+        });
+        const savedVolumeResult = await volumeResult.save();
+        res.json(savedVolumeResult);
+    } catch (error) {
+        console.error('Error saving  volume:', error);
+        res.status(500).json({ message: 'Failed to save volume', error: error.message });
+    }
+})
 
 router.get('/', async (req, res) => {
     try {
