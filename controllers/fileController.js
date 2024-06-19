@@ -55,7 +55,7 @@ const compressAndUploadToCloudinary = (fileBuffer,filename,mimetype) => {
 
 const sendFilesToFlaskAPI = async (fileUrls) => {
   try {
-      const response = await axios.post('https://df7f-154-182-119-254.ngrok-free.app/uncompress-and-predict', {
+      const response = await axios.post('https://4638-154-183-152-222.ngrok-free.app/uncompress-and-predict', {
           file_urls: fileUrls// Convert file URLs to an array of strings
       });
       console.log('Predictions from Flask API:', response.data);
