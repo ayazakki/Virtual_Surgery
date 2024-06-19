@@ -12,7 +12,7 @@ router.route('/delete-multiple')
     .delete(verifyToken, deleteMultipleMRIScans);
     
 // new soft delete
-router.route('/:id')
+router.route('/delete-files/:id')
     .delete(verifyToken, deleteFiles);
 
 router.route('/').post(verifyToken,NiiUpload.single('file'), createNewMRI)
