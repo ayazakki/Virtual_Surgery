@@ -573,12 +573,12 @@ module.exports.deleteFiles =async (req, res) => {
         return res.status(400).json({ message: 'Invalid ID format.' });
     }
 
-     // Step 2: Find the document by ID
-     const result = await BTSegmentationResult.findById(fileId);
-     if (!result) {
-         return res.status(404).json({ message: 'Segmentation result not found.' });
-     }
     try {
+        // Step 2: Find the document by ID
+        const result = await BTSegmentationResult.findById(fileId);
+        if (!result) {
+            return res.status(404).json({ message: 'Segmentation result not found.' });
+        }
 
         // Step 3: Mark the document as deleted and set the deletedAt timestamp
         result.isDeleted = true;

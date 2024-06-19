@@ -99,7 +99,7 @@ const PatientSchema=new mongoose.Schema({
         trim:true,
         maxlength:1000,
     },
-    deleted: {
+    isDeleted: {
         type: Boolean,
         default: false,
     },
