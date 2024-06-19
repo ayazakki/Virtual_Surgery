@@ -99,10 +99,6 @@ const PatientSchema=new mongoose.Schema({
         trim:true,
         maxlength:1000,
     },
-    isDeleted: {
-        type: Boolean,
-        default: false,
-    },
     deletedAt: {
         type: Date,
         default: null,
@@ -114,7 +110,7 @@ const PatientSchema=new mongoose.Schema({
 //new
 // Static method to find all non-deleted patients
 PatientSchema.statics.findActive = function () {
-    return this.find({ deleted: false });
+    return this.find({ deletedAt: null });
 };
 
 function validateCreatePatient(obj){

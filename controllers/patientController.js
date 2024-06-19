@@ -41,11 +41,11 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
 */
 
 module.exports.getPatientByID = asyncHandler(async (req, res) => {
-    const patient = await Patient.findById(req.params.id);
+    const patient = await Patient.findOne({_id: req.params.id ,deletedAt: null});
 
     if (!patient) {
 
-        res.status(404).json({ message: 'The patient with the given ID was not found.' })
+        return res.status(404).json({ message: 'The patient with the given ID was not found.' })
     }
     if (req.user.id !== patient.Surgeon.toString()) {
         return res.status(403).json({ message: "Access denied. You are not authorized to access this patient record." });
