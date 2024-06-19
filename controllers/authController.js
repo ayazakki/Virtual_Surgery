@@ -19,7 +19,7 @@ module.exports.Register=asyncHandler(async(req,res)=>{
     if (error) {
     return res.status(400).json({message:error.details[0].message});
     }
-    let user = await User.findOne({email:req.body.Email});
+    let user = await User.findOne({Email:req.body.Email});
     if(user){
         return res.status(400).json({message:"This user already registered"});
 
