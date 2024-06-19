@@ -7,6 +7,7 @@ const axios = require('axios');
 const cloudinary = require('cloudinary').v2;
 const{cloudinaryUploadImage,cloudinaryRemoveImage,cloudinaryRemoveMultipleImage}=require("../utils/cloudinary")
 const{validateCreateMRIScan,validateUpdateMRIScan,MRIScan} = require("../models/MRimodel");
+const BTSegmentationResult = require("../models/BTSegmentationResult");
 const mongoose = require("mongoose");
 
 // Configure Cloudinary with your cloud name, API key, and API secret
