@@ -12,7 +12,6 @@ const { Patient } = require('../models/Patient'); // Import your MongoDB model
 router.post("/",verifyToken, NiiUpload.array('file'), async (req, res) => {
     console.log('Request Body:', req.body); // Check the request body
     console.log('Uploaded Files:', req.files); // Check the uploaded files
-
     const { files } = req;
     if (!files || files.length === 0) {
         return res.status(400).json({ message: 'No files uploaded.' });
@@ -86,7 +85,8 @@ router.get("/patient/:id",verifyToken, async (req, res) => {
 
 router.get("/:id",verifyToken, async (req, res) => {
     try {
-        const results = await BTSegmentationResult.findById(req.params.id);
+        //findById(req.params.id)
+        const results = await BTSegmentationResult.findOne({ _id: req.params.id, isDeleted: false });
         res.json(results);
     } catch (error) {
         console.error('Error fetching segmentation results:', error);
