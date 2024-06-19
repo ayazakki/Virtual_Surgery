@@ -18,8 +18,9 @@ const VolumeResultSchema = new Schema({
     btSegmentationId: {
       type: Schema.Types.ObjectId,
       ref: 'SegmentationResult', 
-      required: true },
-  });
+      required: true
+    },
+  },{ timestamps: true });
   
   const BTVolumeResult = mongoose.model('VolumeResult', VolumeResultSchema);
   
