@@ -44,24 +44,14 @@ module.exports.Register=asyncHandler(async(req,res)=>{
         token:crypto.randomBytes(32).toString("hex"),
     });
     await verificationToken.save();
-    //const link = `${req.protocol}://${req.get("host")}/verifyemail/${user._id}/verify/${verificationToken.token}`;
     const link = `${req.protocol}://${req.get("host")}/api/auth/${user._id}/verify/${verificationToken.token}`;
-    //const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
-    //puuting link into an htmlTemplate
     const htmlTemplate=`
         <div>
             <p>click on the link below to verify your email</p>
             <a href="${link}">Verify</a>
         </div>`;
 
-    //Send Email to the user
     await sendEmail(user.Email,"Verify your Email",htmlTemplate);    
-
-
-
-    //const token = user.generateToken();
-    //const{Password, ...other}=result._doc;
-    //res.status(201).json({...other,token});
     res.status(201).json({message:"We sent to you an email,please verify your email address"});
 });
 
@@ -101,9 +91,7 @@ module.exports.Login=asyncHandler(async(req,res)=>{
             });
             await verificationToken.save();
         }
-        //const link = `${req.protocol}://${req.get("host")}/verifyemail/${user._id}/verify/${verificationToken.token}`;
         const link = `${req.protocol}://${req.get("host")}/api/auth/${user._id}/verify/${verificationToken.token}`;
-        //const link = `${req.protocol}://${req.get("host")}/users/${user._id}/verify/${verificationToken.token}`;
         const htmlTemplate=`
             <div> 
                 <p>click on the link below to verify your email</p>
