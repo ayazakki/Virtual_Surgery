@@ -234,7 +234,8 @@ module.exports.countPatients = asyncHandler(async (req, res) => {
         const surgeonId = req.user.id;
 
         // Use the user ID to find the patients associated with that user
-        const count = await Patient.countDocuments({ Surgeon: surgeonId });
+        const count = await Patient.findActive()
+        .countDocuments({ Surgeon: surgeonId});
 
         res.status(200).json(count);
     } catch (error) {
