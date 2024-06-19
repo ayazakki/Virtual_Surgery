@@ -15,6 +15,13 @@ const SegmentationResultSchema = new Schema({
         secure_url: { type: String, required: true },
       },
     ],
+    isDeleted: { type: Boolean,
+      default: false,
+      required: true
+    }, // Soft delete flag
+    deletedAt: { type: Date,
+      default: null 
+    }
   });
   
   const BTSegmentationResult = mongoose.model('BTSegmentationResult', SegmentationResultSchema);

@@ -560,3 +560,32 @@ module.exports.deleteMultipleMRIScans = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+// new api 
+router.delete("/:id", verifyToken, async (req, res) => {
+    const fileId = req.params.id;
+
+    // Step 1: Validate the request ID
+    if (!mongoose.Types.ObjectId.isValid(fileId)) {
+        return res.status(400).json({ message: 'Invalid ID format.' });
+    }
+
+    try {
+        // Step 2: Find the document by ID
+        const result = await BTSegmentationResult.findById(fileId);
+        if (!result) {
+            return res.status(404).json({ message: 'Segmentation result not found.' });
+        }
+
+        // Step 3: Mark the document as deleted and set the deletedAt timestamp
+        result.isDeleted = true;
+        result.deletedAt = new Date();
+        await result.save();
+        // Respond with a success message
+        res.status(200).json({ message: 'Segmentation result marked as deleted successfully.' });
+
+    } catch (error) {
+        console.error('Error during soft deletion:', error);
+        res.status(500).json({ message: 'Soft deletion failed', error: error.message });
+    }
+});
