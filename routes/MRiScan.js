@@ -4,14 +4,16 @@ const {Photoupload} = require("../middlewares/photoUpload");
 const{ verifyToken }=require("../middlewares/verifyToken");
 const validateObjectId=require("../middlewares/validateObjectId")
 const { NiiUpload } = require('../utils/niiUpload');
-const{getAllMRI,getMRIById,createNewMRI,updateMRI,deleteMRI,updateMRIfile,deleteMultipleMRIScans}=require("../controllers/mriController");
+const{getAllMRI,getMRIById,createNewMRI,updateMRI,deleteMRI,updateMRIfile,deleteMultipleMRIScans,deleteFiles}=require("../controllers/mriController");
 //http methods 
 
 // Define a route for deleting multiple MRIScans
 router.route('/delete-multiple')
     .delete(verifyToken, deleteMultipleMRIScans);
     
-//api/
+// new soft delete
+router.route('/:id')
+    .delete(verifyToken, deleteFiles);
 
 router.route('/').post(verifyToken,NiiUpload.single('file'), createNewMRI)
                 .get(verifyToken,getAllMRI);

@@ -561,8 +561,9 @@ module.exports.deleteMultipleMRIScans = async (req, res) => {
     }
 };
 
-// new api 
-router.delete("/:id", verifyToken, async (req, res) => {
+// new api ("/:id", verifyToken,
+
+module.exports.deleteFiles =async (req, res) => {
     const fileId = req.params.id;
 
     // Step 1: Validate the request ID
@@ -588,4 +589,4 @@ router.delete("/:id", verifyToken, async (req, res) => {
         console.error('Error during soft deletion:', error);
         res.status(500).json({ message: 'Soft deletion failed', error: error.message });
     }
-});
+};
