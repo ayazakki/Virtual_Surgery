@@ -45,7 +45,7 @@ module.exports.updateUser= asyncHandler(async (req,res)=>{
        LastName: req.body.LastName,
        UserName: req.body.UserName,
        Email: req.body.Email,
-       Age: req.body.Age,
+       Birthdate: req.body.Birthdate,
        Gender: req.body.Gender,
        Title: req.body.Title,
        Specialist: req.body.Specialist,

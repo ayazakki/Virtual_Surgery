@@ -33,10 +33,9 @@ const UserSchema = new mongoose.Schema(
    unique: true,
    trim: true,
   },
-  Age: {
-   type: Number,
-   required: true,
-   minlength: 0,
+  Birthdate: {
+    type: Date,
+    required: true,
   },
   Gender: {
    type: String,
@@ -106,7 +105,7 @@ function validateRegister(obj) {
      LastName: joi.string().min(3).max(200).required(),
      UserName: joi.string().min(3).max(200).required(),
      Email: joi.string().trim().min(5).max(100).required().email(),
-     Age: joi.number().required().min(0),
+     Birthdate: joi.date().required(),
      Gender: joi.string().min(4).max(6).required(),
      Title: joi.string().min(3).max(200).required(),
      Specialist: joi.string().min(3).max(200).required(),
@@ -132,7 +131,7 @@ function validateUpdate(obj) {
      LastName: joi.string().min(3).max(200),
      UserName: joi.string().min(3).max(200),
      Email: joi.string().trim().min(5).max(100).email(),
-     Age: joi.number().min(0),
+     Birthdate: joi.date(),
      Gender: joi.string().min(3).max(6),
      Title: joi.string().min(3).max(200),
      Specialist: joi.string().min(3).max(200),

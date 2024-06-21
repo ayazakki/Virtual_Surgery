@@ -80,7 +80,7 @@ module.exports.addPatient = asyncHandler(async (req, res) => {
             First_Name: req.body.First_Name,
             Last_Name: req.body.Last_Name,
             Gender: req.body.Gender,
-            Age: req.body.Age,
+            Birthdate: req.body.Birthdate,
             Risk_Factors_And_Life_Style: req.body.Risk_Factors_And_Life_Style,
             Family_History: req.body.Family_History,
             Neurological_Examination: req.body.Neurological_Examination,
@@ -129,7 +129,7 @@ module.exports.updatePatient=asyncHandler(async(req,res)=> {
             $set: {
                 First_Name:req.body.First_Name,
                 Last_Name:req.body.Last_Name,
-                Age: req.body.Age ,
+                Birthdate: req.body.Birthdate ,
                 Gender: req.body.Gender ,
                 Risk_Factors_And_Life_Style:req.body.Risk_Factors_And_Life_Style,
                 Family_History:req.body.Family_History,

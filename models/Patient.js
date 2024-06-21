@@ -28,11 +28,9 @@ const PatientSchema=new mongoose.Schema({
         minlength:4,
         maxlength:6,
     },
-    Age:{
-        type:String,
-        required:true,
-        trim:true,
-        maxlength:200,
+    Birthdate: {
+        type: Date,
+        required: true,
     },
     Risk_Factors_And_Life_Style:{
         type:String,
@@ -120,7 +118,7 @@ function validateCreatePatient(obj){
         First_Name:joi.string().min(3).max(200).required(),
         Last_Name:joi.string().min(3).max(200).required(),
         Gender:joi.string().min(4).max(6).required(),
-        Age:joi.number().min(0).integer().required(),
+        Birthdate: joi.date().required(),
         Risk_Factors_And_Life_Style:joi.string().min(3).max(1000),
         Family_History:joi.string().min(3).max(1000),
         Neurological_Examination:joi.string().min(3).max(1000),
@@ -144,7 +142,7 @@ function validateUpdatePatient(obj){
     ({ 
         First_Name:joi.string().min(3).max(200),
         Last_Name:joi.string().min(3).max(200),
-        Age:joi.number().min(0).integer(),
+        Birthdate: joi.date(),
         Gender:joi.string().min(4).max(6),
         Risk_Factors_And_Life_Style:joi.string().min(3).max(1000),
         Family_History:joi.string().min(3).max(1000),
