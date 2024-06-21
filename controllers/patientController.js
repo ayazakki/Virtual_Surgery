@@ -16,10 +16,7 @@ const mongoose = require ("mongoose");
 */ 
 module.exports.getAllPatients = asyncHandler(async (req, res) => {
     try {
-        // Extract user information from the request object
         const user = req.user;
-    
-        // Retrieve patients related to the user (assuming the user has a field like surgeonId)
         const patientList = await Patient.findActive()
         .where({ Surgeon: user.id })
         .populate("Surgeon",["FirstName","LastName"])
@@ -42,7 +39,6 @@ module.exports.getAllPatients = asyncHandler(async (req, res) => {
 
 module.exports.getPatientByID = asyncHandler(async (req, res) => {
     const patient = await Patient.findOne({_id: req.params.id ,deletedAt: null});
-
     if (!patient) {
 
         return res.status(404).json({ message: 'The patient with the given ID was not found.' })
@@ -50,15 +46,12 @@ module.exports.getPatientByID = asyncHandler(async (req, res) => {
     if (req.user.id !== patient.Surgeon.toString()) {
         return res.status(403).json({ message: "Access denied. You are not authorized to access this patient record." });
     }
-
     else {
         await Patient.findById(req.params.id).
             populate("Surgeon", ["-Password"]);
 
         res.status(200).json(patient);
     }
-
-
 }
 );
 
@@ -192,14 +185,10 @@ module.exports.deletePatient=asyncHandler(async (req,res)=> {
 
 module.exports.deletePatient = async (req, res) => {
     const patientId = req.params.id;
-
-    // Step 1: Validate the request ID
     if (!mongoose.Types.ObjectId.isValid(patientId)) {
         return res.status(400).json({ message: 'Invalid ID format.' });
     }
-
     try {
-        // Step 2: Find the patient by ID
         const patient = await Patient.findById(patientId);
         if (!patient) {
             return res.status(404).json({ message: 'Patient not found.' });
@@ -207,12 +196,8 @@ module.exports.deletePatient = async (req, res) => {
         if (req.user.id !== patient.Surgeon.toString()) {
             return res.status(403).json({ message: "Access denied. You are not authorized to access this patient record." });
         }
-
-        // Step 3: Mark the patient as deleted and set the deletedAt timestamp
         patient.deletedAt = new Date();
         await patient.save();
-
-        // Respond with a success message
         res.json({ message: 'Patient marked as deleted successfully.' });
 
     } catch (error) {
@@ -229,10 +214,7 @@ module.exports.deletePatient = async (req, res) => {
 */
 module.exports.countPatients = asyncHandler(async (req, res) => {
     try {
-        // Extract user ID from the token
         const surgeonId = req.user.id;
-
-        // Use the user ID to find the patients associated with that user
         const count = await Patient.findActive()
         .countDocuments({ Surgeon: surgeonId});
 
