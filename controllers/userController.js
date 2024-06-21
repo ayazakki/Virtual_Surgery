@@ -85,21 +85,6 @@ module.exports.deleteUser = asyncHandler(async(req,res) =>{
     if(!user){
         return res.status(404).json({msg:"user not found"});
         }
-        
-        //get all patients about this
-        const mriscans=await MRIScan.find({user:user._id});
-        //get the public ids from mriscans
-        const publicIds =mriscans?.map((mriscan)=>mriscan.Image.publicId);
-        //remove images in cloudinary
-        if(publicIds?.length > 0){
-            await cloudinaryRemoveMultipleImage(publicIds);
-        }
-        
-        await cloudinaryRemoveImage(user.ProfilePhoto.publicId); 
-        // delete all patients and mriscans 
-        await Patient.deleteMany({ user :user._id});
-        await MRIScan.deleteMany({ user :user._id});
-        //
         await User.findByIdAndDelete(req.params.id);
         res.status(200).json({msg:"user has been deleted.."});
 });
