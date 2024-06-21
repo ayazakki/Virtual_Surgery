@@ -15,6 +15,14 @@ const SegmentationResultSchema = new Schema({
         secure_url: { type: String, required: true },
       },
     ],
+    brainGLB:{
+      public_id: { type: String, required: true },
+      secure_url: { type: String, required: true },
+    },
+    tumorGLB:{
+      public_id: { type: String, required: true },
+      secure_url: { type: String, required: true },
+    },
     deletedAt: { type: Date,
       default: null 
     }

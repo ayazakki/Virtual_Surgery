@@ -96,9 +96,6 @@ UserSchema.methods.generateToken = function(){
     return jwt.sign({id:this._id,IsAdmin:this.IsAdmin},process.env.JWT_SECRET_KEY);
 
 };
-
-
-//validate Register
 function validateRegister(obj) {
     const schema = joi.object({
      FirstName: joi.string().min(3).max(200).required(),

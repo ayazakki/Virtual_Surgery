@@ -89,6 +89,22 @@ router.get("/file/:id",verifyToken, async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch segmentation results', error: error.message });
     }
 });
+
+router.get("/get-ar/:id", async (req, res) => {
+    try {
+        const results = await BTSegmentationResult.findOne({ _id: req.params.id, deletedAt : null });
+        console.log(results);
+        if(!results)
+            {
+                return res.status(400).json("this id not found");
+            }
+        const {brainGLB,tumorGLB} = results; 
+        return res.json({brainGLB,tumorGLB});
+    } catch (error) {
+        console.error('Error fetching segmentation results:', error);
+        res.status(500).json({ message: 'Failed to fetch segmentation results', error: error.message });
+    }
+});
 /** 
 router.get("/", async (req, res) => {
     try {
