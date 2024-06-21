@@ -21,7 +21,7 @@ router.post('/', verifyToken, async (req, res) => {
         //const buffer = bufferResponse.data;
         //new
         const buffer = bufferResponse.data
-        const volume = await calculateVolume(buffer, req.body.threshold);
+        const volume = await calculateVolume(buffer, req.body.threshold-2);
         const result = {
             volume,
             threshold: req.body.threshold,
