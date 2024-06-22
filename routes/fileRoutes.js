@@ -46,6 +46,8 @@ router.post("/",verifyToken, NiiUpload.array('file'), async (req, res) => {
                 public_id: result.public_id,
                 secure_url: result.secure_url,
             })),
+            brainGLB:flaskResponse.brainGLB,
+            tumorGLB:flaskResponse.tumorGLB,
         });
 
         // Save the document to MongoDB
