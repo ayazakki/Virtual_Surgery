@@ -28,7 +28,6 @@ module.exports.getAllUsers=asyncHandler(async(req,res) =>{
 @access private (only Admin & user himself)
 */ 
 module.exports.updateUser= asyncHandler(async (req,res)=>{
-
     const {error}= validateUpdate(req.body);
     if(error){
         return res.status(400).json({message:error.details[0].message});
